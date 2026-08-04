@@ -3,7 +3,7 @@
 <html lang="es" class="dark">
 <head>
   <meta charset="UTF-8">
-  <title>Mi Portafolio Dashboard</title>
+  <rodrigo fernandez>
   <!-- CDN de Tailwind CSS para prototipar rápido -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
