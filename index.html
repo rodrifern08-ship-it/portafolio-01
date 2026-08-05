@@ -239,3 +239,33 @@
   </script>
 </body>
 </html>
+<!-- Script de Conexión Supabase -->
+  <script>
+    const SUPABASE_URL = 'https://vqjgepiqnpiglkloeexa.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_gOdQYGPUCFAxvOmO52_DNQ_lUrUrdKp';
+    
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.getElementById('btn-subir').addEventListener('click', async () => {
+      const fileInput = document.getElementById('input-foto');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('Por favor selecciona una imagen primero.');
+        return;
+      }
+
+      const fileName = `${Date.now()}_${file.name}`;
+
+      const { data, error } = await _supabase.storage
+        .from('fotos-portafolio')
+        .upload(fileName, file);
+
+      if (error) {
+        alert('Error al subir la foto: ' + error.message);
+      } else {
+        alert('¡Foto subida con éxito!');
+        location.reload();
+      }
+    });
+  </script>
