@@ -38,7 +38,8 @@
       <div>
         <div class="flex justify-between items-center mb-6">
           <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Navegación</p>
-          <button id="btn-toggle-edit-side" class="px-2 py-1 rounded bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1 font-medium">
+          <!-- Oculto por defecto; sólo visible si es admin -->
+          <button id="btn-toggle-edit-side" class="hidden px-2 py-1 rounded bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1 font-medium">
             <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> <span id="txt-btn-edit-side">Editar Web</span>
           </button>
         </div>
@@ -100,7 +101,8 @@
             <p class="text-xs text-gray-400 editable">Construcción en seco</p>
           </div>
         </div>
-        <button id="btn-toggle-edit-main" class="p-2 bg-orange-500/20 text-orange-400 rounded-lg text-xs font-medium">
+        <!-- Oculto por defecto -->
+        <button id="btn-toggle-edit-main" class="hidden p-2 bg-orange-500/20 text-orange-400 rounded-lg text-xs font-medium">
           <i data-lucide="edit-3" class="w-4 h-4"></i>
         </button>
       </header>
@@ -258,8 +260,8 @@
     </main>
   </div>
 
-  <!-- Botón Flotante Modo Edición -->
-  <button id="btn-float-edit" class="fixed bottom-4 right-4 z-50 bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 text-xs transition active:scale-95">
+  <!-- Botón Flotante Modo Edición (Oculto por defecto) -->
+  <button id="btn-float-edit" class="hidden fixed bottom-4 right-4 z-50 bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 text-xs transition active:scale-95">
     <i data-lucide="edit" class="w-4 h-4"></i> Modo Edición
   </button>
 
@@ -293,7 +295,9 @@
     const BUCKET_NAME = 'fotos-portafolio';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // FUNCION PARA APLICAR LA FOTO DE PERFIL GUARDADA
+    let esAdmin = false;
+
+    // ACTUALIZAR IMÁGENES EN PANTALLA
     function actualizarImagenesPerfil(url) {
       if (!url) return;
       document.getElementById('img-perfil-desktop').src = url;
@@ -301,15 +305,33 @@
       document.getElementById('img-perfil-hero').src = url;
     }
 
-    // CARGAR FOTO GUARDADA AL ABRIR LA PAGINA
-    function cargarFotoPerfilGuardada() {
-      const urlGuardada = localStorage.getItem('foto_perfil_rodrigo');
-      if (urlGuardada) {
-        actualizarImagenesPerfil(urlGuardada);
+    // CARGAR FOTO DE PERFIL DESDE SUPABASE Y LOCALSTORAGE
+    async function cargarFotoPerfilGuardada() {
+      // 1. Mostrar de inmediato la del localStorage si existe (para carga rápida)
+      const urlLocal = localStorage.getItem('foto_perfil_rodrigo');
+      if (urlLocal) actualizarImagenesPerfil(urlLocal);
+
+      // 2. Consultar a Supabase la última foto guardada en el bucket
+      try {
+        const { data: files, error } = await _supabase.storage
+          .from(BUCKET_NAME)
+          .list('', { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
+
+        if (!error && files) {
+          const fotoPerfil = files.find(f => f.name.startsWith('perfil_'));
+          if (fotoPerfil) {
+            const { data } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(fotoPerfil.name);
+            const publicUrl = data.publicUrl;
+            actualizarImagenesPerfil(publicUrl);
+            localStorage.setItem('foto_perfil_rodrigo', publicUrl);
+          }
+        }
+      } catch (e) {
+        console.error("Error al consultar foto de perfil:", e);
       }
     }
 
-    // SUBIR Y GUARDAR PERMANENTEMENTE LA FOTO DE PERFIL
+    // SUBIR Y GUARDAR FOTO DE PERFIL
     document.getElementById('btn-subir-perfil')?.addEventListener('click', async () => {
       const fileInput = document.getElementById('input-foto-perfil');
       const file = fileInput?.files[0];
@@ -325,20 +347,37 @@
         const { data: publicData } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName);
         const nuevaUrl = publicData.publicUrl;
 
-        // 1. Guardar en la memoria local
         localStorage.setItem('foto_perfil_rodrigo', nuevaUrl);
-
-        // 2. Aplicar a las imagenes en pantalla
         actualizarImagenesPerfil(nuevaUrl);
 
-        alert('¡Foto de perfil actualizada y guardada permanentemente!');
+        alert('¡Foto de perfil actualizada exitosamente!');
         fileInput.value = '';
       }
     });
 
-    // SISTEMA DE EDICION INTERACTIVO
+    // SUBIR FOTO A LA GALERÍA
+    document.getElementById('btn-subir')?.addEventListener('click', async () => {
+      const fileInput = document.getElementById('input-foto');
+      const file = fileInput?.files[0];
+
+      if (!file) { alert('Selecciona una imagen para la galería.'); return; }
+
+      const fileName = `obra_${Date.now()}_${file.name}`;
+      const { error } = await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
+
+      if (error) {
+        alert('Error al subir imagen: ' + error.message);
+      } else {
+        alert('¡Foto agregada a la galería!');
+        fileInput.value = '';
+        cargarGaleria();
+      }
+    });
+
+    // SISTEMA MODO EDICIÓN
     let modoEdicionActivo = false;
     function alternarModoEdicion() {
+      if (!esAdmin) return;
       modoEdicionActivo = !modoEdicionActivo;
       const editables = document.querySelectorAll('.editable');
 
@@ -366,10 +405,34 @@
     document.getElementById('btn-login-mobile')?.addEventListener('click', abrirLogin);
     document.getElementById('btn-cerrar-modal')?.addEventListener('click', cerrarLogin);
 
+    // MOSTRAR/OCULTAR CONTROLES DE EDICIÓN SEGÚN SESIÓN
+    function aplicarEstadoAdmin(activo) {
+      esAdmin = activo;
+      const btnSide = document.getElementById('btn-toggle-edit-side');
+      const btnMain = document.getElementById('btn-toggle-edit-main');
+      const btnFloat = document.getElementById('btn-float-edit');
+      const panelAdmin = document.getElementById('admin-panel');
+
+      if (activo) {
+        btnSide?.classList.remove('hidden');
+        btnMain?.classList.remove('hidden');
+        btnFloat?.classList.remove('hidden');
+        panelAdmin?.classList.remove('hidden');
+      } else {
+        btnSide?.classList.add('hidden');
+        btnMain?.classList.add('hidden');
+        btnFloat?.classList.add('hidden');
+        panelAdmin?.classList.add('hidden');
+        if (modoEdicionActivo) alternarModoEdicion();
+      }
+    }
+
+    // CERRAR SESIÓN
     document.getElementById('btn-cerrar-admin')?.addEventListener('click', () => {
-      document.getElementById('admin-panel')?.classList.add('hidden');
+      aplicarEstadoAdmin(false);
     });
 
+    // INICIAR SESIÓN
     document.getElementById('form-login')?.addEventListener('submit', (e) => {
       e.preventDefault();
       const u = document.getElementById('login-usuario').value;
@@ -377,18 +440,17 @@
 
       if (u === 'rodrigo.f' && c === 'huala146') {
         cerrarLogin();
-        document.getElementById('admin-panel')?.classList.remove('hidden');
+        aplicarEstadoAdmin(true);
         cargarGaleria();
       } else {
         document.getElementById('login-error')?.classList.remove('hidden');
       }
     });
 
-    // SCROLL DEL MENU
+    // NAVEGACIÓN ACTIVA AL SCROLLEAR
     window.addEventListener('scroll', () => {
       const sections = document.querySelectorAll('main section');
       const navLinks = document.querySelectorAll('#nav-menu a');
-
       let currentSectionId = '';
 
       sections.forEach(section => {
@@ -409,7 +471,7 @@
       });
     });
 
-    // CARGA DE FOTOS DE GALERIA
+    // CARGAR GALERÍA DE TRABAJOS
     async function cargarGaleria() {
       const contenedorGaleria = document.getElementById('galeria-fotos');
       if (!contenedorGaleria) return;
@@ -436,7 +498,7 @@
           card.innerHTML = `
             <img src="${data.publicUrl}" class="w-full h-48 object-cover">
             <div class="p-3">
-              <p class="text-xs text-gray-300 font-medium editable">${file.name.split('_').slice(1).join('_') || 'Proyecto'}</p>
+              <p class="text-xs text-gray-300 font-medium editable">${file.name.split('_').slice(2).join(' ') || 'Proyecto'}</p>
             </div>
           `;
           contenedorGaleria.appendChild(card);
@@ -446,9 +508,11 @@
       }
     }
 
+    // INICIALIZACIÓN
     document.addEventListener('DOMContentLoaded', () => {
       cargarFotoPerfilGuardada();
       cargarGaleria();
+      aplicarEstadoAdmin(false); // Garantizar que la sesión inicie cerrada
     });
   </script>
 </body>
