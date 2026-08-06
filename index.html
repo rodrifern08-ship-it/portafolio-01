@@ -17,9 +17,9 @@
     <!-- Sidebar / Navegación Lateral -->
     <aside class="w-64 bg-[#141417] border-r border-gray-800 p-6 hidden md:block shrink-0">
       <div class="flex items-center gap-3 mb-8">
-        <!-- Ícono R interactivo para Login Admin -->
-        <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full bg-orange-500 hover:bg-orange-600 cursor-pointer flex items-center justify-center font-bold text-white transition-all shadow-lg active:scale-95">
-          R
+        <!-- Foto de Perfil / Login Admin Desktop -->
+        <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0">
+          <img src="foto-perfil.jpg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
         </button>
         <div>
           <h2 class="text-white font-bold text-sm">Rodrigo Fernandez</h2>
@@ -32,6 +32,9 @@
         <a href="#perfil" class="flex items-center gap-3 px-3 py-2 bg-orange-500/10 text-orange-400 font-medium rounded-lg text-sm">
           <i data-lucide="user" class="w-4 h-4"></i> Perfil Principal
         </a>
+        <a href="#galeria" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <i data-lucide="image" class="w-4 h-4"></i> Galería de Fotos
+        </a>
         <a href="#habilidades" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
           <i data-lucide="wrench" class="w-4 h-4"></i> Habilidades
         </a>
@@ -40,9 +43,6 @@
         </a>
         <a href="#ubicacion" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
           <i data-lucide="map-pin" class="w-4 h-4"></i> Zona de Trabajo
-        </a>
-        <a href="#galeria" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
-          <i data-lucide="image" class="w-4 h-4"></i> Galería de Fotos
         </a>
       </nav>
     </aside>
@@ -53,9 +53,9 @@
       <!-- Header Móvil -->
       <header class="flex items-center justify-between md:hidden bg-[#141417] p-4 rounded-xl border border-gray-800">
         <div class="flex items-center gap-3">
-          <!-- Ícono R interactivo Móvil -->
-          <button id="btn-login-mobile" title="Acceso Administrador" class="w-9 h-9 rounded-full bg-orange-500 hover:bg-orange-600 cursor-pointer flex items-center justify-center font-bold text-white text-sm transition-all active:scale-95">
-            R
+          <!-- Foto de Perfil / Login Admin Móvil -->
+          <button id="btn-login-mobile" title="Acceso Administrador" class="w-9 h-9 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform active:scale-95 shrink-0">
+            <img src="foto-perfil.jpg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
           </button>
           <div>
             <h1 class="text-white font-bold text-sm">Rodrigo Fernandez</h1>
@@ -64,34 +64,18 @@
         </div>
       </header>
 
-      <!-- Tarjeta Perfil / Barra de Progreso -->
+      <!-- Tarjeta Perfil -->
       <section id="perfil" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <h1 class="text-2xl font-bold text-white mb-1">Perfil Profesional</h1>
         <p class="text-sm text-gray-400 mb-4">Construcción en seco</p>
 
         <!-- Barra Naranja -->
-        <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden mt-2 mb-6">
+        <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden mt-2">
           <div class="bg-gradient-to-r from-orange-600 to-amber-500 h-full rounded-full w-full"></div>
-        </div>
-
-        <!-- Botones Verdes Interactivos -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
-          <a href="#galeria" class="flex items-center gap-2 text-xs text-emerald-400 hover:text-emerald-300 font-medium hover:underline transition">
-            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Foto de Perfil
-          </a>
-          <a href="#habilidades" class="flex items-center gap-2 text-xs text-emerald-400 hover:text-emerald-300 font-medium hover:underline transition">
-            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Habilidades
-          </a>
-          <a href="#experiencia" class="flex items-center gap-2 text-xs text-emerald-400 hover:text-emerald-300 font-medium hover:underline transition">
-            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Experiencia
-          </a>
-          <a href="#ubicacion" class="flex items-center gap-2 text-xs text-emerald-400 hover:text-emerald-300 font-medium hover:underline transition">
-            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Ubicación
-          </a>
         </div>
       </section>
 
-      <!-- Panel Admin para Subir Fotos (Oculto por defecto con la clase 'hidden') -->
+      <!-- Panel Admin para Subir Fotos -->
       <div id="admin-panel" class="hidden bg-[#18181c] border border-orange-500/50 rounded-xl p-6 shadow-xl relative animate-fade-in">
         <h3 class="text-white font-bold mb-3 flex items-center gap-2">
           <i data-lucide="upload-cloud" class="w-5 h-5 text-orange-500"></i>
@@ -109,6 +93,18 @@
           </button>
         </div>
       </div>
+
+      <!-- Galería de Fotos (Ahora al principio) -->
+      <section id="galeria" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
+        <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <i data-lucide="image" class="w-5 h-5 text-orange-500"></i>
+          Fotos de Trabajo y Proyectos
+        </h2>
+        
+        <div id="galeria-fotos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <p class="text-xs text-gray-500 col-span-full">Cargando imágenes de la galería...</p>
+        </div>
+      </section>
 
       <!-- Sección Habilidades -->
       <section id="habilidades" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
@@ -185,20 +181,48 @@
         </div>
       </section>
 
-      <!-- Galería de Fotos -->
-      <section id="galeria" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
-        <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-          <i data-lucide="image" class="w-5 h-5 text-orange-500"></i>
-          Fotos de Trabajo y Proyectos
-        </h2>
-        
-        <!-- Contenedor donde se cargarán dinámicamente las fotos de Supabase -->
-        <div id="galeria-fotos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <p class="text-xs text-gray-500 col-span-full">Cargando imágenes de la galería...</p>
-        </div>
-      </section>
+    </main>
+  </div>
 
-   </main>
+  <!-- Modal emergente para Usuario y Contraseña -->
+  <div id="modal-login" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-[#18181c] border border-gray-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl relative">
+      
+      <button id="btn-cerrar-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-sm p-1 rounded-lg transition">
+        ✕
+      </button>
+
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-bold">
+          <i data-lucide="lock" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="text-white font-bold text-base">Acceso Administrador</h3>
+          <p class="text-xs text-gray-400">Ingresa tus datos para gestionar la web</p>
+        </div>
+      </div>
+
+      <form id="form-login" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Usuario</label>
+          <input type="text" id="login-usuario" required placeholder="Ingresa tu usuario" class="w-full bg-[#27272a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500 transition">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-300 mb-1">Contraseña</label>
+          <input type="password" id="login-clave" required placeholder="••••••••" class="w-full bg-[#27272a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500 transition">
+        </div>
+
+        <p id="login-error" class="text-xs text-red-400 hidden text-center font-medium">
+          Usuario o contraseña incorrectos.
+        </p>
+
+        <button type="submit" class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-medium text-xs rounded-lg transition shadow-lg shadow-orange-500/20 active:scale-95">
+          Iniciar Sesión
+        </button>
+      </form>
+
+    </div>
   </div>
 
   <!-- Inicializar íconos Lucide -->
@@ -218,15 +242,46 @@
 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 🔑 Login de Administrador
-    function solicitarLogin() {
-      const usuarioIngresado = prompt('Usuario Administrador:');
-      if (!usuarioIngresado) return;
+    // 🔑 Lógica del Modal de Login
+    const modalLogin = document.getElementById('modal-login');
+    const formLogin = document.getElementById('form-login');
+    const loginError = document.getElementById('login-error');
 
-      const claveIngresada = prompt('Contraseña:');
+    function abrirModalLogin() {
+      if (modalLogin) {
+        modalLogin.classList.remove('hidden');
+        modalLogin.classList.add('flex');
+        loginError?.classList.add('hidden');
+        document.getElementById('login-usuario')?.focus();
+      }
+    }
+
+    function cerrarModalLogin() {
+      if (modalLogin) {
+        modalLogin.classList.add('hidden');
+        modalLogin.classList.remove('flex');
+        formLogin?.reset();
+      }
+    }
+
+    // Eventos de click en las fotos de perfil
+    document.getElementById('btn-login-desktop')?.addEventListener('click', abrirModalLogin);
+    document.getElementById('btn-login-mobile')?.addEventListener('click', abrirModalLogin);
+    document.getElementById('btn-cerrar-modal')?.addEventListener('click', cerrarModalLogin);
+
+    modalLogin?.addEventListener('click', (e) => {
+      if (e.target === modalLogin) cerrarModalLogin();
+    });
+
+    formLogin?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const usuarioIngresado = document.getElementById('login-usuario').value;
+      const claveIngresada = document.getElementById('login-clave').value;
 
       if (usuarioIngresado === USUARIO_ADMIN && claveIngresada === CLAVE_ADMIN) {
-        alert('¡Bienvenido Rodrigo! Modo Administrador activado.');
+        cerrarModalLogin();
+        
         const panel = document.getElementById('admin-panel');
         if (panel) {
           panel.classList.remove('hidden');
@@ -234,9 +289,9 @@
           cargarGaleria();
         }
       } else {
-        alert('Usuario o contraseña incorrectos.');
+        loginError?.classList.remove('hidden');
       }
-    }
+    });
 
     // 📷 Cargar Galería desde Supabase
     async function cargarGaleria() {
@@ -291,7 +346,7 @@
     }
 
     // 🗑️ Borrar Foto
-    async function eliminarFoto(nombreArchivo) {
+    window.eliminarFoto = async function(nombreArchivo) {
       if (!confirm('¿Seguro que deseas eliminar esta imagen?')) return;
 
       const { error } = await _supabase.storage
@@ -304,13 +359,10 @@
         alert('Imagen eliminada.');
         cargarGaleria();
       }
-    }
+    };
 
     // Eventos al cargar el documento
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('btn-login-desktop')?.addEventListener('click', solicitarLogin);
-      document.getElementById('btn-login-mobile')?.addEventListener('click', solicitarLogin);
-      
       document.getElementById('btn-cerrar-admin')?.addEventListener('click', () => {
         document.getElementById('admin-panel')?.classList.add('hidden');
         cargarGaleria();
