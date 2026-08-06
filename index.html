@@ -382,9 +382,9 @@
         const { error } = await _supabase.storage.from(BUCKET_NAME).remove([fileName]);
 
         if (error) {
-          alert('Atención de Supabase: ' + error.message);
+          alert('No se pudo eliminar de Supabase: ' + error.message);
         } else {
-          alert('¡Imagen borrada exitosamente!');
+          alert('¡Imagen eliminada correctamente!');
         }
       } catch (err) {
         console.error('Error al intentar eliminar:', err);
@@ -451,7 +451,7 @@
         modoEdicionActivo = false;
       }
       
-      // RECARGA INMEDIATA DE LA GALERÍA PARA DIBUJAR BOTONES DE ELIMINAR
+      // FORZAR REBUILT DE GALERÍA CON O SIN BOTÓN ELIMINAR
       cargarGaleria();
     }
 
@@ -474,7 +474,7 @@
       }
     });
 
-    // CARGAR GALERÍA Y RENDERIZAR BOTÓN DE BORRADO
+    // CARGAR GALERÍA Y DIBUJAR BOTONES
     async function cargarGaleria() {
       const contenedorGaleria = document.getElementById('galeria-fotos');
       if (!contenedorGaleria) return;
@@ -489,7 +489,6 @@
           return;
         }
 
-        // Filtra cualquier archivo nulo o plantilla
         const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder');
 
         if (fotosValidas.length === 0) {
@@ -506,7 +505,7 @@
           let botonEliminarHTML = '';
           if (esAdmin) {
             botonEliminarHTML = `
-              <button onclick="eliminarFotoGaleria('${file.name}')" title="Borrar foto" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2.5 rounded-lg transition-transform active:scale-95 shadow-2xl z-50 flex items-center justify-center cursor-pointer">
+              <button onclick="eliminarFotoGaleria('${file.name}')" title="Borrar foto" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-transform active:scale-95 shadow-2xl z-50 flex items-center justify-center cursor-pointer">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
             `;
@@ -524,7 +523,6 @@
           contenedorGaleria.appendChild(card);
         });
         
-        // Re-inicializa los iconos de Lucide (incluido trash-2)
         lucide.createIcons();
       } catch (err) {
         console.error(err);
