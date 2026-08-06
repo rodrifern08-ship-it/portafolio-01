@@ -16,7 +16,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Estilos visuales cuando el modo edición está activo */
     body.modo-edicion .editable {
       outline: 2px dashed #f97316 !important;
       outline-offset: 2px;
@@ -32,13 +31,11 @@
 </head>
 <body class="bg-[#0f0f12] text-gray-200 font-sans min-h-screen flex flex-col">
 
-  <!-- Contenedor Principal: items-start es la clave para que el sticky del sidebar funcione -->
   <div class="flex items-start w-full relative min-h-screen">
     
-    <!-- Sidebar / Navegación Lateral FIJA -->
+    <!-- Sidebar Navegación Lateral FIJA -->
     <aside class="w-64 bg-[#141417] border-r border-gray-800 p-6 hidden md:flex flex-col justify-between shrink-0 sticky top-0 h-screen overflow-y-auto z-40">
       <div>
-        <!-- Botón para alternar edición -->
         <div class="flex justify-between items-center mb-6">
           <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Navegación</p>
           <button id="btn-toggle-edit-side" class="px-2 py-1 rounded bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1 font-medium">
@@ -51,12 +48,11 @@
             <img id="img-perfil-desktop" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
           </button>
           <div>
-            <h2 class="text-white font-bold text-sm editable" id="side-nombre">Rodrigo Fernandez</h2>
-            <p class="text-xs text-gray-400 editable" id="side-rubro">Construcción en seco</p>
+            <h2 class="text-white font-bold text-sm editable">Rodrigo Fernandez</h2>
+            <p class="text-xs text-gray-400 editable">Construcción en seco</p>
           </div>
         </div>
 
-        <!-- Enlaces del Menú -->
         <nav class="space-y-2" id="nav-menu">
           <a href="#perfil" class="nav-link flex items-center gap-3 px-3 py-2 bg-orange-500/10 text-orange-400 font-medium rounded-lg text-sm transition">
             <i data-lucide="user" class="w-4 h-4 shrink-0"></i>
@@ -109,7 +105,7 @@
         </button>
       </header>
 
-      <!-- Panel Admin para Gestión de Fotos -->
+      <!-- Panel Admin -->
       <div id="admin-panel" class="hidden bg-[#18181c] border-2 border-orange-500 rounded-xl p-6 shadow-2xl space-y-4">
         <div class="flex items-center justify-between border-b border-gray-800 pb-3">
           <h3 class="text-white font-bold flex items-center gap-2">
@@ -129,7 +125,7 @@
             </label>
             <input type="file" id="input-foto-perfil" accept="image/*" class="text-xs text-gray-400 block w-full file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-orange-500/20 file:text-orange-400">
             <button id="btn-subir-perfil" class="mt-2 w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded-lg font-medium transition">
-              Actualizar Imagen
+              Actualizar y Guardar Foto
             </button>
           </div>
 
@@ -146,7 +142,7 @@
         </div>
       </div>
 
-      <!-- Tarjeta Perfil Principal -->
+      <!-- Sección Perfil Principal -->
       <section id="perfil" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <div class="flex flex-col md:flex-row items-center gap-6 mb-4">
           <img id="img-perfil-hero" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-orange-500 shadow-xl">
@@ -165,7 +161,7 @@
         </div>
       </section>
 
-      <!-- Galería de Fotos -->
+      <!-- Galería -->
       <section id="galeria" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="image" class="w-5 h-5 text-orange-500"></i>
@@ -262,7 +258,7 @@
     </main>
   </div>
 
-  <!-- Botón Flotante para Activar Edición Rápida -->
+  <!-- Botón Flotante Modo Edición -->
   <button id="btn-float-edit" class="fixed bottom-4 right-4 z-50 bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 text-xs transition active:scale-95">
     <i data-lucide="edit" class="w-4 h-4"></i> Modo Edición
   </button>
@@ -297,9 +293,51 @@
     const BUCKET_NAME = 'fotos-portafolio';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // SISTEMA DE EDICIÓN INTERACTIVO
-    let modoEdicionActivo = false;
+    // FUNCION PARA APLICAR LA FOTO DE PERFIL GUARDADA
+    function actualizarImagenesPerfil(url) {
+      if (!url) return;
+      document.getElementById('img-perfil-desktop').src = url;
+      document.getElementById('img-perfil-mobile').src = url;
+      document.getElementById('img-perfil-hero').src = url;
+    }
 
+    // CARGAR FOTO GUARDADA AL ABRIR LA PAGINA
+    function cargarFotoPerfilGuardada() {
+      const urlGuardada = localStorage.getItem('foto_perfil_rodrigo');
+      if (urlGuardada) {
+        actualizarImagenesPerfil(urlGuardada);
+      }
+    }
+
+    // SUBIR Y GUARDAR PERMANENTEMENTE LA FOTO DE PERFIL
+    document.getElementById('btn-subir-perfil')?.addEventListener('click', async () => {
+      const fileInput = document.getElementById('input-foto-perfil');
+      const file = fileInput?.files[0];
+
+      if (!file) { alert('Selecciona una imagen primero.'); return; }
+
+      const fileName = `perfil_rodrigo_${Date.now()}.jpeg`;
+      const { data, error } = await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
+
+      if (error) {
+        alert('Error al subir: ' + error.message);
+      } else {
+        const { data: publicData } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName);
+        const nuevaUrl = publicData.publicUrl;
+
+        // 1. Guardar en la memoria local
+        localStorage.setItem('foto_perfil_rodrigo', nuevaUrl);
+
+        // 2. Aplicar a las imagenes en pantalla
+        actualizarImagenesPerfil(nuevaUrl);
+
+        alert('¡Foto de perfil actualizada y guardada permanentemente!');
+        fileInput.value = '';
+      }
+    });
+
+    // SISTEMA DE EDICION INTERACTIVO
+    let modoEdicionActivo = false;
     function alternarModoEdicion() {
       modoEdicionActivo = !modoEdicionActivo;
       const editables = document.querySelectorAll('.editable');
@@ -319,16 +357,7 @@
     document.getElementById('btn-toggle-edit-main')?.addEventListener('click', alternarModoEdicion);
     document.getElementById('btn-float-edit')?.addEventListener('click', alternarModoEdicion);
 
-    // Prevenir redirecciones de enlaces en modo edición
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        if (modoEdicionActivo) {
-          e.preventDefault();
-        }
-      });
-    });
-
-    // SISTEMA DE LOGIN Y MODAL
+    // LOGIN Y MODAL
     const modalLogin = document.getElementById('modal-login');
     const abrirLogin = () => { modalLogin.classList.remove('hidden'); modalLogin.classList.add('flex'); };
     const cerrarLogin = () => { modalLogin.classList.add('hidden'); modalLogin.classList.remove('flex'); };
@@ -336,6 +365,10 @@
     document.getElementById('btn-login-desktop')?.addEventListener('click', abrirLogin);
     document.getElementById('btn-login-mobile')?.addEventListener('click', abrirLogin);
     document.getElementById('btn-cerrar-modal')?.addEventListener('click', cerrarLogin);
+
+    document.getElementById('btn-cerrar-admin')?.addEventListener('click', () => {
+      document.getElementById('admin-panel')?.classList.add('hidden');
+    });
 
     document.getElementById('form-login')?.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -351,7 +384,7 @@
       }
     });
 
-    // CONTROL DEL SCROLL Y MENÚ ACTIVO
+    // SCROLL DEL MENU
     window.addEventListener('scroll', () => {
       const sections = document.querySelectorAll('main section');
       const navLinks = document.querySelectorAll('#nav-menu a');
@@ -376,7 +409,7 @@
       });
     });
 
-    // CARGA DE FOTOS DESDE SUPABASE
+    // CARGA DE FOTOS DE GALERIA
     async function cargarGaleria() {
       const contenedorGaleria = document.getElementById('galeria-fotos');
       if (!contenedorGaleria) return;
@@ -413,7 +446,10 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', cargarGaleria);
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarFotoPerfilGuardada();
+      cargarGaleria();
+    });
   </script>
 </body>
 </html>
