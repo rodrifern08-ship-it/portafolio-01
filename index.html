@@ -246,7 +246,7 @@
       document.getElementById('admin-panel')?.classList.add('hidden');
     });
 
-    // 📷 Cargar Galería desde Supabase
+   // 📷 Cargar Galería desde Supabase con opción de Borrar
     async function cargarGaleria() {
       const contenedorGaleria = document.getElementById('galeria-fotos');
       if (!contenedorGaleria) return;
@@ -268,53 +268,48 @@
         return;
       }
 
-      contenedorGaleria.innerHTML = ''; // Limpiar mensaje de carga
+      contenedorGaleria.innerHTML = ''; 
+
+      // Verificar si el modo admin está activo
+      const esAdmin = !document.getElementById('admin-panel')?.classList.contains('hidden');
 
       fotosValidas.forEach(file => {
         const { data } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(file.name);
         const nombreMostrar = file.name.split('_').slice(1).join('_') || 'Proyecto de Construcción';
 
         const card = document.createElement('div');
-        card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg transition hover:border-orange-500/40';
+        card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg transition hover:border-orange-500/40 relative group';
+        
         card.innerHTML = `
           <img src="${data.publicUrl}" alt="${nombreMostrar}" class="w-full h-48 object-cover">
-          <div class="p-3">
+          <div class="p-3 flex justify-between items-center">
             <p class="text-xs text-gray-300 font-medium truncate">${nombreMostrar}</p>
+            ${esAdmin ? `
+              <button onclick="eliminarFoto('${file.name}')" class="px-2 py-1 bg-red-600/80 hover:bg-red-600 text-white text-[10px] rounded transition">
+                Eliminar
+              </button>
+            ` : ''}
           </div>
         `;
         contenedorGaleria.appendChild(card);
       });
     }
 
-    // Cargar fotos al iniciar la página
-    document.addEventListener('DOMContentLoaded', cargarGaleria);
-    cargarGaleria();
+    // 🗑️ Función para borrar foto de Supabase
+    async function eliminarFoto(nombreArchivo) {
+      const confirmar = confirm('¿Estás seguro de que deseas eliminar esta imagen?');
+      if (!confirmar) return;
 
-    // 📤 Subir nuevas fotos desde el panel
-    document.getElementById('btn-subir')?.addEventListener('click', async () => {
-      const fileInput = document.getElementById('input-foto');
-      const file = fileInput?.files[0];
-
-      if (!file) {
-        alert('Por favor selecciona una imagen de tu dispositivo.');
-        return;
-      }
-
-      const fileName = `${Date.now()}_${file.name}`;
-
-      const { data, error } = await _supabase.storage
+      const { error } = await _supabase.storage
         .from(BUCKET_NAME)
-        .upload(fileName, file);
+        .remove([nombreArchivo]);
 
       if (error) {
-        alert('Error al subir la imagen: ' + error.message);
+        alert('Error al eliminar la foto: ' + error.message);
       } else {
-        alert('¡Imagen publicada con éxito!');
-        fileInput.value = ''; // Limpiar el campo de archivo
-        cargarGaleria();     // Recargar galería de inmediato
+        alert('Foto eliminada correctamente.');
+        cargarGaleria(); // Recargar la galería inmediatamente
       }
-    });
-  </script>
-
+    }
 </body>
 </html>
