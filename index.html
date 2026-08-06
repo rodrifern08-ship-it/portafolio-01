@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rodrigo Fernandez - Construcción en Seco</title>
 
+  <!-- Ícono de la pestaña (Favicon) -->
   <link rel="icon" type="image/png" href="logo.png">
 
   <!-- Tailwind CSS CDN -->
@@ -13,74 +14,104 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* Estilo para que cualquier área editable resalte al pasar el cursor o hacer clic */
+    [contenteditable="true"]:hover {
+      outline: 1px dashed #f97316;
+      background-color: rgba(249, 115, 22, 0.05);
+      border-radius: 4px;
+      cursor: text;
+    }
+    [contenteditable="true"]:focus {
+      outline: 2px solid #f97316;
+      background-color: rgba(249, 115, 22, 0.1);
+      border-radius: 4px;
+    }
+  </style>
 </head>
-<body class="bg-[#0f0f12] text-gray-200 font-sans min-h-screen">
+<body class="bg-[#0f0f12] text-gray-200 font-sans min-h-screen flex flex-col">
 
-  <div class="flex min-h-screen">
-    <!-- Sidebar / Navegación Lateral FIJA -->
-    <aside class="w-64 bg-[#141417] border-r border-gray-800 p-6 hidden md:block shrink-0 sticky top-0 h-screen overflow-y-auto relative">
-      
-      <!-- Botón Editar Índice (Lápiz Admin) -->
-      <button class="btn-editar-lapiz hidden absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition" title="Editar Índice">
-        <i data-lucide="pencil" class="w-4 h-4"></i>
-      </button>
-
-      <div class="flex items-center gap-3 mb-8">
-        <!-- Foto de Perfil / Login Admin Desktop -->
-        <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0 relative group">
-          <img id="img-perfil-desktop" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
-        </button>
-        <div>
-          <h2 class="text-white font-bold text-sm editable-field">Rodrigo Fernandez</h2>
-          <p class="text-xs text-gray-400 editable-field">Construcción en seco</p>
+  <div class="flex flex-1 w-full relative">
+    
+    <!-- Sidebar / Navegación Lateral FIJA (Baja con la página) -->
+    <aside class="w-64 bg-[#141417] border-r border-gray-800 p-6 hidden md:flex flex-col justify-between shrink-0 sticky top-0 h-screen overflow-y-auto z-40">
+      <div>
+        <!-- Botón Editar Menú (Lápiz Admin) -->
+        <div class="flex justify-between items-center mb-6">
+          <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Navegación</p>
+          <button id="btn-edit-toggle-side" class="p-1 rounded bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Activar/Desactivar Edición">
+            <i data-lucide="pencil" class="w-3 h-3"></i> Editar
+          </button>
         </div>
+
+        <div class="flex items-center gap-3 mb-8">
+          <!-- Foto de Perfil / Login Admin Desktop -->
+          <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0 relative">
+            <img id="img-perfil-desktop" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
+          </button>
+          <div>
+            <h2 class="text-white font-bold text-sm editable-field" contenteditable="true">Rodrigo Fernandez</h2>
+            <p class="text-xs text-gray-400 editable-field" contenteditable="true">Construcción en seco</p>
+          </div>
+        </div>
+
+        <!-- Enlaces del Menú -->
+        <nav class="space-y-2" id="nav-menu">
+          <a href="#perfil" class="nav-item flex items-center gap-3 px-3 py-2 bg-orange-500/10 text-orange-400 font-medium rounded-lg text-sm transition">
+            <i data-lucide="user" class="w-4 h-4 shrink-0"></i>
+            <span class="editable-field" contenteditable="true">Perfil Principal</span>
+          </a>
+          <a href="#galeria" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+            <i data-lucide="image" class="w-4 h-4 shrink-0"></i>
+            <span class="editable-field" contenteditable="true">Galería de Fotos</span>
+          </a>
+          <a href="#habilidades" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+            <i data-lucide="wrench" class="w-4 h-4 shrink-0"></i>
+            <span class="editable-field" contenteditable="true">Habilidades</span>
+          </a>
+          <a href="#experiencia" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+            <i data-lucide="briefcase" class="w-4 h-4 shrink-0"></i>
+            <span class="editable-field" contenteditable="true">Experiencia / Trabajos</span>
+          </a>
+          <a href="#ubicacion" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+            <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i>
+            <span class="editable-field" contenteditable="true">Zona de Trabajo</span>
+          </a>
+          <a href="#contacto" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+            <i data-lucide="phone" class="w-4 h-4 shrink-0"></i>
+            <span class="editable-field" contenteditable="true">Contactos</span>
+          </a>
+        </nav>
       </div>
 
-      <nav class="space-y-2">
-        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Navegación</p>
-        <a href="#perfil" class="flex items-center gap-3 px-3 py-2 bg-orange-500/10 text-orange-400 font-medium rounded-lg text-sm transition">
-          <i data-lucide="user" class="w-4 h-4"></i> <span class="editable-field">Perfil Principal</span>
-        </a>
-        <a href="#galeria" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
-          <i data-lucide="image" class="w-4 h-4"></i> <span class="editable-field">Galería de Fotos</span>
-        </a>
-        <a href="#habilidades" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
-          <i data-lucide="wrench" class="w-4 h-4"></i> <span class="editable-field">Habilidades</span>
-        </a>
-        <a href="#experiencia" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
-          <i data-lucide="briefcase" class="w-4 h-4"></i> <span class="editable-field">Experiencia / Trabajos</span>
-        </a>
-        <a href="#ubicacion" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
-          <i data-lucide="map-pin" class="w-4 h-4"></i> <span class="editable-field">Zona de Trabajo</span>
-        </a>
-        <a href="#contacto" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
-          <i data-lucide="phone" class="w-4 h-4"></i> <span class="editable-field">Contactos</span>
-        </a>
-      </nav>
+      <div class="pt-4 border-t border-gray-800 text-center">
+        <p class="text-[10px] text-gray-500">© Rodrigo Fernandez</p>
+      </div>
     </aside>
 
     <!-- Contenido Principal -->
-    <main class="flex-1 p-4 md:p-8 max-w-5xl mx-auto w-full space-y-8">
+    <main class="flex-1 p-4 md:p-8 max-w-4xl mx-auto w-full space-y-8">
 
       <!-- Header Móvil -->
-      <header class="flex items-center justify-between md:hidden bg-[#141417] p-4 rounded-xl border border-gray-800">
+      <header class="flex items-center justify-between md:hidden bg-[#141417] p-4 rounded-xl border border-gray-800 sticky top-2 z-30 shadow-lg">
         <div class="flex items-center gap-3">
-          <button id="btn-login-mobile" title="Acceso Administrador" class="w-9 h-9 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform active:scale-95 shrink-0">
+          <button id="btn-login-mobile" title="Acceso Administrador" class="w-9 h-9 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer shrink-0">
             <img id="img-perfil-mobile" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
           </button>
           <div>
-            <h1 class="text-white font-bold text-sm editable-field">Rodrigo Fernandez</h1>
-            <p class="text-xs text-gray-400 editable-field">Construcción en seco</p>
+            <h1 class="text-white font-bold text-sm editable-field" contenteditable="true">Rodrigo Fernandez</h1>
+            <p class="text-xs text-gray-400 editable-field" contenteditable="true">Construcción en seco</p>
           </div>
         </div>
       </header>
 
-      <!-- Panel Admin (Solo visible tras iniciar sesión) -->
+      <!-- Panel Admin para Gestión de Fotos -->
       <div id="admin-panel" class="hidden bg-[#18181c] border-2 border-orange-500 rounded-xl p-6 shadow-2xl space-y-4">
         <div class="flex items-center justify-between border-b border-gray-800 pb-3">
           <h3 class="text-white font-bold flex items-center gap-2">
             <i data-lucide="shield-check" class="w-5 h-5 text-orange-500"></i>
-            Modo Edición Activado
+            Panel Administrador Activado
           </h3>
           <button id="btn-cerrar-admin" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs rounded-lg transition">
             Cerrar Sesión
@@ -88,6 +119,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Cambiar Foto de Perfil -->
           <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800">
             <label class="block text-xs font-medium text-orange-400 mb-2 flex items-center gap-2">
               <i data-lucide="camera" class="w-4 h-4"></i> Cambiar Foto de Perfil
@@ -98,6 +130,7 @@
             </button>
           </div>
 
+          <!-- Subir Foto a Galería -->
           <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800">
             <label class="block text-xs font-medium text-orange-400 mb-2 flex items-center gap-2">
               <i data-lucide="upload-cloud" class="w-4 h-4"></i> Subir Proyecto a Galería
@@ -111,8 +144,8 @@
       </div>
 
       <!-- Tarjeta Perfil Principal -->
-      <section id="perfil" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="btn-editar-lapiz hidden absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition" title="Editar Sección">
+      <section id="perfil" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
+        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
           <i data-lucide="pencil" class="w-4 h-4"></i>
         </button>
 
@@ -121,29 +154,29 @@
             <img id="img-perfil-hero" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-orange-500 shadow-xl">
           </div>
 
-          <div class="text-center md:text-left flex-1">
-            <h1 class="text-2xl font-bold text-white mb-1 editable-field">Rodrigo Fernandez</h1>
-            <p class="text-sm text-orange-400 font-medium mb-3 editable-field">Especialista en Construcción en Seco</p>
-            <p class="text-xs text-gray-400 leading-relaxed editable-field">
+          <div class="text-center md:text-left flex-1 space-y-1">
+            <h1 class="text-2xl font-bold text-white editable-field" contenteditable="true">Rodrigo Fernandez</h1>
+            <p class="text-sm text-orange-400 font-medium editable-field" contenteditable="true">Especialista en Construcción en Seco</p>
+            <p class="text-xs text-gray-400 leading-relaxed editable-field" contenteditable="true">
               Servicios profesionales de Steel Framing, armado de tabiques, cielorrasos suspendidos y terminaciones finas de masillado.
             </p>
           </div>
         </div>
 
-        <div class="w-full bg-gray-800 h-2.5 rounded-full overflow-hidden mt-2">
+        <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden mt-4">
           <div class="bg-gradient-to-r from-orange-600 to-amber-500 h-full rounded-full w-full"></div>
         </div>
       </section>
 
       <!-- Galería de Fotos -->
-      <section id="galeria" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="btn-editar-lapiz hidden absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition" title="Editar Sección">
+      <section id="galeria" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
+        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
           <i data-lucide="pencil" class="w-4 h-4"></i>
         </button>
 
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="image" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field">Fotos de Trabajo y Proyectos</span>
+          <span class="editable-field" contenteditable="true">Fotos de Trabajo y Proyectos</span>
         </h2>
         <div id="galeria-fotos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <p class="text-xs text-gray-500 col-span-full">Cargando imágenes de la galería...</p>
@@ -151,59 +184,59 @@
       </section>
 
       <!-- Sección Habilidades -->
-      <section id="habilidades" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="btn-editar-lapiz hidden absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition" title="Editar Sección">
+      <section id="habilidades" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
+        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
           <i data-lucide="pencil" class="w-4 h-4"></i>
         </button>
 
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="wrench" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field">Habilidades y Especialidades</span>
+          <span class="editable-field" contenteditable="true">Habilidades y Especialidades</span>
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
             ⚡ Armado de Estructuras Metálicas (Steel Framing)
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
             🧱 Emplacado de Durlock / Placas de Yeso
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
             ✨ Tapado de Juntas y Macillado
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
             🏠 Cielorrasos Suspendidos y Desmontables
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
             🔇 Aislamiento Acústico y Térmico
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
             📐 Lectura e Interpretación de Planos
           </div>
         </div>
       </section>
 
       <!-- Sección Experiencia -->
-      <section id="experiencia" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="btn-editar-lapiz hidden absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition" title="Editar Sección">
+      <section id="experiencia" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
+        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
           <i data-lucide="pencil" class="w-4 h-4"></i>
         </button>
 
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="briefcase" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field">Experiencia Laboral</span>
+          <span class="editable-field" contenteditable="true">Experiencia Laboral</span>
         </h2>
         <div class="space-y-4">
           <div class="border-l-2 border-orange-500 pl-4 py-1">
-            <h3 class="text-white font-semibold text-base editable-field">Especialista en Construcción en Seco</h3>
-            <p class="text-xs text-gray-400 editable-field">Trabajos Particulares & Obras • 2020 - Presente</p>
-            <p class="text-sm text-gray-300 mt-2 editable-field">
+            <h3 class="text-white font-semibold text-base editable-field" contenteditable="true">Especialista en Construcción en Seco</h3>
+            <p class="text-xs text-gray-400 editable-field" contenteditable="true">Trabajos Particulares & Obras • 2020 - Presente</p>
+            <p class="text-sm text-gray-300 mt-2 editable-field" contenteditable="true">
               Realización de tabiques divisorios, cielorrasos suspendidos y terminaciones finas de masilla en obras residenciales y comerciales.
             </p>
           </div>
           <div class="border-l-2 border-gray-700 pl-4 py-1">
-            <h3 class="text-white font-semibold text-base editable-field">Montador de Durlock y Estructuras</h3>
-            <p class="text-xs text-gray-400 editable-field">Empresa de Construcción / Obras • 2018 - 2020</p>
-            <p class="text-sm text-gray-300 mt-2 editable-field">
+            <h3 class="text-white font-semibold text-base editable-field" contenteditable="true">Montador de Durlock y Estructuras</h3>
+            <p class="text-xs text-gray-400 editable-field" contenteditable="true">Empresa de Construcción / Obras • 2018 - 2020</p>
+            <p class="text-sm text-gray-300 mt-2 editable-field" contenteditable="true">
               Armado de perfiles de acero galvanizado, colocación de aislantes térmicos y emplacado general.
             </p>
           </div>
@@ -211,19 +244,19 @@
       </section>
 
       <!-- Sección Ubicación -->
-      <section id="ubicacion" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="btn-editar-lapiz hidden absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition" title="Editar Sección">
+      <section id="ubicacion" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
+        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
           <i data-lucide="pencil" class="w-4 h-4"></i>
         </button>
 
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="map-pin" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field">Zona de Trabajo</span>
+          <span class="editable-field" contenteditable="true">Zona de Trabajo</span>
         </h2>
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#27272a] p-4 rounded-lg border border-gray-800">
           <div>
-            <h3 class="text-white font-medium text-base editable-field">Atención y Presupuestos sin Cargo</h3>
-            <p class="text-sm text-gray-400 editable-field">Disponible para obras y reformas en toda la zona y alrededores.</p>
+            <h3 class="text-white font-medium text-base editable-field" contenteditable="true">Atención y Presupuestos sin Cargo</h3>
+            <p class="text-sm text-gray-400 editable-field" contenteditable="true">Disponible para obras y reformas en toda la zona y alrededores.</p>
           </div>
           <a href="https://w.app/t4pofa" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-lg transition flex items-center gap-2 shrink-0">
             <i data-lucide="message-circle" class="w-4 h-4"></i>
@@ -233,14 +266,14 @@
       </section>
 
       <!-- Sección Contacto -->
-      <section id="contacto" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="btn-editar-lapiz hidden absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition" title="Editar Sección">
+      <section id="contacto" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
+        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
           <i data-lucide="pencil" class="w-4 h-4"></i>
         </button>
 
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="phone" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field">Medios de Contacto</span>
+          <span class="editable-field" contenteditable="true">Medios de Contacto</span>
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <a href="https://w.app/t4pofa" target="_blank" class="bg-[#27272a] border border-gray-800 hover:border-emerald-500/50 p-4 rounded-xl transition flex items-center gap-4 group">
@@ -259,7 +292,7 @@
             </div>
             <div>
               <p class="text-xs text-gray-400 font-medium">Correo Electrónico</p>
-              <p id="txt-email" class="text-white font-bold text-sm editable-field">rodrifern08@gmail.com</p>
+              <p id="txt-email" class="text-white font-bold text-sm editable-field" contenteditable="true">rodrigoconstrucciones323@gmail.com</p>
             </div>
           </a>
         </div>
@@ -314,6 +347,7 @@
 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // Modal Login
     const modalLogin = document.getElementById('modal-login');
     const formLogin = document.getElementById('form-login');
     const loginError = document.getElementById('login-error');
@@ -341,7 +375,6 @@
 
     modalLogin?.addEventListener('click', (e) => { if (e.target === modalLogin) cerrarModalLogin(); });
 
-    // Habilitar edición al iniciar sesión
     formLogin?.addEventListener('submit', (e) => {
       e.preventDefault();
       const u = document.getElementById('login-usuario').value;
@@ -349,27 +382,12 @@
 
       if (u === USUARIO_ADMIN && c === CLAVE_ADMIN) {
         cerrarModalLogin();
-        
-        // Mostrar panel principal de admin
         document.getElementById('admin-panel')?.classList.remove('hidden');
-        
-        // Mostrar todos los lápices de edición
-        document.querySelectorAll('.btn-editar-lapiz').forEach(lapiz => lapiz.classList.remove('hidden'));
-        
-        activarEdicionTexto();
         cargarGaleria();
       } else {
         loginError?.classList.remove('hidden');
       }
     });
-
-    function activarEdicionTexto() {
-      const campos = document.querySelectorAll('.editable-field');
-      campos.forEach(campo => {
-        campo.contentEditable = "true";
-        campo.classList.add('hover:bg-orange-500/10', 'p-0.5', 'rounded', 'border', 'border-dashed', 'border-orange-500/40', 'cursor-text');
-      });
-    }
 
     // Subir Foto Perfil Supabase
     document.getElementById('btn-subir-perfil')?.addEventListener('click', async () => {
@@ -378,7 +396,7 @@
 
       if (!file) { alert('Selecciona una imagen primero.'); return; }
 
-      const fileName = `perfil_rodrigo_${Date.now()}.jpg`;
+      const fileName = `perfil_rodrigo_${Date.now()}.jpeg`;
       const { data, error } = await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
 
       if (error) {
@@ -427,7 +445,7 @@
           card.innerHTML = `
             <img src="${data.publicUrl}" alt="${nombreMostrar}" class="w-full h-48 object-cover">
             <div class="p-3 flex justify-between items-center">
-              <p class="text-xs text-gray-300 font-medium truncate editable-field">${nombreMostrar}</p>
+              <p class="text-xs text-gray-300 font-medium truncate editable-field" contenteditable="true">${nombreMostrar}</p>
               ${esAdmin ? `
                 <button onclick="eliminarFoto('${file.name}')" class="px-2 py-1 bg-red-600/80 hover:bg-red-600 text-white text-[10px] rounded transition">
                   Eliminar
@@ -470,26 +488,31 @@
       else { alert('¡Imagen publicada!'); fileInput.value = ''; cargarGaleria(); }
     });
 
-    // Marcador automático de secciones en el índice lateral
-    const observerOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('id');
-          document.querySelectorAll('aside nav a').forEach(link => {
-            link.classList.remove('bg-orange-500/10', 'text-orange-400');
-            link.classList.add('text-gray-400');
-          });
-          const activeLink = document.querySelector(`aside nav a[href="#${id}"]`);
-          if (activeLink) {
-            activeLink.classList.add('bg-orange-500/10', 'text-orange-400');
-            activeLink.classList.remove('text-gray-400');
-          }
+    // MARCADOR AUTOMÁTICO DE SECCIÓN ACTIVA AL HACER SCROLL
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('main section');
+      const navLinks = document.querySelectorAll('#nav-menu a');
+
+      let currentSectionId = '';
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        const sectionHeight = section.offsetHeight;
+        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+          currentSectionId = section.getAttribute('id');
         }
       });
-    }, observerOptions);
 
-    document.querySelectorAll('main section').forEach(section => observer.observe(section));
+      navLinks.forEach(link => {
+        link.classList.remove('bg-orange-500/10', 'text-orange-400', 'font-medium');
+        link.classList.add('text-gray-400');
+
+        if (link.getAttribute('href') === `#${currentSectionId}`) {
+          link.classList.add('bg-orange-500/10', 'text-orange-400', 'font-medium');
+          link.classList.remove('text-gray-400');
+        }
+      });
+    });
   </script>
 </body>
 </html>
