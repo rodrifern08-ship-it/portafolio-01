@@ -18,12 +18,12 @@
 <body class="bg-[#0f0f12] text-gray-200 font-sans min-h-screen">
 
   <div class="flex min-h-screen">
-    <!-- Sidebar / Navegación Lateral (PC) -->
-    <aside class="w-64 bg-[#141417] border-r border-gray-800 p-6 hidden md:block shrink-0">
+    <!-- Sidebar / Navegación Lateral Fija -->
+    <aside class="w-64 bg-[#141417] border-r border-gray-800 p-6 hidden md:block shrink-0 sticky top-0 h-screen overflow-y-auto">
       <div class="flex items-center gap-3 mb-8">
         <!-- Foto de Perfil / Login Admin Desktop -->
-        <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0">
-          <img src="foto-perfil.JPEG" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
+        <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0 relative group">
+          <img id="img-perfil-desktop" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
         </button>
         <div>
           <h2 class="text-white font-bold text-sm">Rodrigo Fernandez</h2>
@@ -33,7 +33,7 @@
 
       <nav class="space-y-2">
         <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">Navegación</p>
-        <a href="#perfil" class="flex items-center gap-3 px-3 py-2 bg-orange-500/10 text-orange-400 font-medium rounded-lg text-sm">
+        <a href="#perfil" class="flex items-center gap-3 px-3 py-2 bg-orange-500/10 text-orange-400 font-medium rounded-lg text-sm transition">
           <i data-lucide="user" class="w-4 h-4"></i> Perfil Principal
         </a>
         <a href="#galeria" class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
@@ -60,9 +60,8 @@
       <!-- Header Móvil -->
       <header class="flex items-center justify-between md:hidden bg-[#141417] p-4 rounded-xl border border-gray-800">
         <div class="flex items-center gap-3">
-          <!-- Foto de Perfil / Login Admin Móvil -->
           <button id="btn-login-mobile" title="Acceso Administrador" class="w-9 h-9 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform active:scale-95 shrink-0">
-            <img src="foto-perfil.jpg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
+            <img id="img-perfil-mobile" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
           </button>
           <div>
             <h1 class="text-white font-bold text-sm">Rodrigo Fernandez</h1>
@@ -71,35 +70,72 @@
         </div>
       </header>
 
-      <!-- Tarjeta Perfil -->
-      <section id="perfil" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
-        <h1 class="text-2xl font-bold text-white mb-1">Perfil Profesional</h1>
-        <p class="text-sm text-gray-400 mb-4">Construcción en seco</p>
-
-        <!-- Barra Naranja -->
-        <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden mt-2">
-          <div class="bg-gradient-to-r from-orange-600 to-amber-500 h-full rounded-full w-full"></div>
-        </div>
-      </section>
-
-      <!-- Panel Admin para Subir Fotos -->
-      <div id="admin-panel" class="hidden bg-[#18181c] border border-orange-500/50 rounded-xl p-6 shadow-xl relative animate-fade-in">
-        <h3 class="text-white font-bold mb-3 flex items-center gap-2">
-          <i data-lucide="upload-cloud" class="w-5 h-5 text-orange-500"></i>
-          Panel Admin: Subir Proyecto
-        </h3>
-        
-        <input type="file" id="input-foto" accept="image/*" class="text-sm text-gray-400 mb-4 block file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-orange-500/20 file:text-orange-400 hover:file:bg-orange-500/30">
-        
-        <div class="flex gap-3">
-          <button id="btn-subir" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium text-xs rounded-lg transition flex items-center gap-2">
-            <i data-lucide="upload" class="w-4 h-4"></i> Subir a la Galería
-          </button>
-          <button id="btn-cerrar-admin" class="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs rounded-lg transition">
+      <!-- Panel Admin (Solo visible tras iniciar sesión) -->
+      <div id="admin-panel" class="hidden bg-[#18181c] border-2 border-orange-500 rounded-xl p-6 shadow-2xl relative space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+          <h3 class="text-white font-bold flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-5 h-5 text-orange-500"></i>
+            Modo Edición Activado
+          </h3>
+          <button id="btn-cerrar-admin" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs rounded-lg transition">
             Cerrar Sesión
           </button>
         </div>
+
+        <!-- Opciones de Edición -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Cambiar Foto de Perfil -->
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800">
+            <label class="block text-xs font-medium text-orange-400 mb-2 flex items-center gap-2">
+              <i data-lucide="camera" class="w-4 h-4"></i> Cambiar Foto de Perfil
+            </label>
+            <input type="file" id="input-foto-perfil" accept="image/*" class="text-xs text-gray-400 block w-full file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-orange-500/20 file:text-orange-400">
+            <button id="btn-subir-perfil" class="mt-2 w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded-lg font-medium transition">
+              Actualizar Imagen de Perfil
+            </button>
+          </div>
+
+          <!-- Subir Foto a Galería -->
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800">
+            <label class="block text-xs font-medium text-orange-400 mb-2 flex items-center gap-2">
+              <i data-lucide="upload-cloud" class="w-4 h-4"></i> Subir Proyecto a Galería
+            </label>
+            <input type="file" id="input-foto" accept="image/*" class="text-xs text-gray-400 block w-full file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-orange-500/20 file:text-orange-400">
+            <button id="btn-subir" class="mt-2 w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded-lg font-medium transition">
+              Publicar en Galería
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-orange-500/10 border border-orange-500/30 p-3 rounded-lg">
+          <p class="text-xs text-orange-300">
+            ✏️ <strong>Sugerencia:</strong> Mientras tengas la sesión abierta, puedes hacer clic directo sobre los textos de la página (títulos, descripciones o habilidades) para editarlos directamente en pantalla.
+          </p>
+        </div>
       </div>
+
+      <!-- Tarjeta Perfil Principal (Con Imagen Central / Logo) -->
+      <section id="perfil" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
+        <div class="flex flex-col md:flex-row items-center gap-6 mb-4">
+          <!-- Círculo Grande con Foto o Letra -->
+          <div class="relative group">
+            <img id="img-perfil-hero" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-orange-500 shadow-xl">
+          </div>
+
+          <div class="text-center md:text-left flex-1">
+            <h1 class="text-2xl font-bold text-white mb-1 editable-field">Rodrigo Fernandez</h1>
+            <p class="text-sm text-orange-400 font-medium mb-3 editable-field">Especialista en Construcción en Seco</p>
+            <p class="text-xs text-gray-400 leading-relaxed editable-field">
+              Servicios profesionales de Steel Framing, armado de tabiques, cielorrasos suspendidos y terminaciones finas de masillado.
+            </p>
+          </div>
+        </div>
+
+        <!-- Barra Naranja -->
+        <div class="w-full bg-gray-800 h-2.5 rounded-full overflow-hidden mt-2">
+          <div class="bg-gradient-to-r from-orange-600 to-amber-500 h-full rounded-full w-full"></div>
+        </div>
+      </section>
 
       <!-- Galería de Fotos -->
       <section id="galeria" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
@@ -107,7 +143,6 @@
           <i data-lucide="image" class="w-5 h-5 text-orange-500"></i>
           Fotos de Trabajo y Proyectos
         </h2>
-        
         <div id="galeria-fotos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <p class="text-xs text-gray-500 col-span-full">Cargando imágenes de la galería...</p>
         </div>
@@ -119,24 +154,23 @@
           <i data-lucide="wrench" class="w-5 h-5 text-orange-500"></i>
           Habilidades y Especialidades
         </h2>
-        
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
             ⚡ Armado de Estructuras Metálicas (Steel Framing)
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
             🧱 Emplacado de Durlock / Placas de Yeso
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
             ✨ Tapado de Juntas y Macillado
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
             🏠 Cielorrasos Suspendidos y Desmontables
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
             🔇 Aislamiento Acústico y Térmico
           </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300">
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field">
             📐 Lectura e Interpretación de Planos
           </div>
         </div>
@@ -148,20 +182,18 @@
           <i data-lucide="briefcase" class="w-5 h-5 text-orange-500"></i>
           Experiencia Laboral
         </h2>
-
         <div class="space-y-4">
           <div class="border-l-2 border-orange-500 pl-4 py-1">
-            <h3 class="text-white font-semibold text-base">Especialista en Construcción en Seco</h3>
-            <p class="text-xs text-gray-400">Trabajos Particulares & Obras • 2020 - Presente</p>
-            <p class="text-sm text-gray-300 mt-2">
+            <h3 class="text-white font-semibold text-base editable-field">Especialista en Construcción en Seco</h3>
+            <p class="text-xs text-gray-400 editable-field">Trabajos Particulares & Obras • 2020 - Presente</p>
+            <p class="text-sm text-gray-300 mt-2 editable-field">
               Realización de tabiques divisorios, cielorrasos suspendidos y terminaciones finas de masilla en obras residenciales y comerciales.
             </p>
           </div>
-
           <div class="border-l-2 border-gray-700 pl-4 py-1">
-            <h3 class="text-white font-semibold text-base">Montador de Durlock y Estructuras</h3>
-            <p class="text-xs text-gray-400">Empresa de Construcción / Obras • 2018 - 2020</p>
-            <p class="text-sm text-gray-300 mt-2">
+            <h3 class="text-white font-semibold text-base editable-field">Montador de Durlock y Estructuras</h3>
+            <p class="text-xs text-gray-400 editable-field">Empresa de Construcción / Obras • 2018 - 2020</p>
+            <p class="text-sm text-gray-300 mt-2 editable-field">
               Armado de perfiles de acero galvanizado, colocación de aislantes térmicos y emplacado general.
             </p>
           </div>
@@ -174,13 +206,11 @@
           <i data-lucide="map-pin" class="w-5 h-5 text-orange-500"></i>
           Zona de Trabajo
         </h2>
-
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#27272a] p-4 rounded-lg border border-gray-800">
           <div>
-            <h3 class="text-white font-medium text-base">Atención y Presupuestos sin Cargo</h3>
-            <p class="text-sm text-gray-400">Disponible para obras y reformas en toda la zona y alrededores.</p>
+            <h3 class="text-white font-medium text-base editable-field">Atención y Presupuestos sin Cargo</h3>
+            <p class="text-sm text-gray-400 editable-field">Disponible para obras y reformas en toda la zona y alrededores.</p>
           </div>
-          
           <a href="https://w.app/t4pofa" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-lg transition flex items-center gap-2 shrink-0">
             <i data-lucide="message-circle" class="w-4 h-4"></i>
             Consultar por mi zona
@@ -188,15 +218,13 @@
         </div>
       </section>
 
-      <!-- NUEVA SECCIÓN DE CONTACTO -->
+      <!-- Sección Contacto -->
       <section id="contacto" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="phone" class="w-5 h-5 text-orange-500"></i>
           Medios de Contacto
         </h2>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Opción WhatsApp -->
           <a href="https://w.app/t4pofa" target="_blank" class="bg-[#27272a] border border-gray-800 hover:border-emerald-500/50 p-4 rounded-xl transition flex items-center gap-4 group">
             <div class="w-12 h-12 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <i data-lucide="message-circle" class="w-6 h-6"></i>
@@ -207,14 +235,13 @@
             </div>
           </a>
 
-          <!-- Opción Correo Electrónico -->
           <a href="mailto:rodrigoconstrucciones323@gmail.com" class="bg-[#27272a] border border-gray-800 hover:border-orange-500/50 p-4 rounded-xl transition flex items-center gap-4 group">
             <div class="w-12 h-12 rounded-lg bg-orange-500/10 text-orange-500 border border-orange-500/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <i data-lucide="mail" class="w-6 h-6"></i>
             </div>
             <div>
               <p class="text-xs text-gray-400 font-medium">Correo Electrónico</p>
-              <p class="text-white font-bold text-sm">rodrifern08@gmail.com</p>
+              <p id="txt-email" class="text-white font-bold text-sm editable-field">rodrigoconstrucciones323@gmail.com</p>
             </div>
           </a>
         </div>
@@ -223,13 +250,10 @@
     </main>
   </div>
 
-  <!-- Modal emergente para Usuario y Contraseña -->
+  <!-- Modal Emergente Login Admin -->
   <div id="modal-login" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-[#18181c] border border-gray-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl relative">
-      
-      <button id="btn-cerrar-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-sm p-1 rounded-lg transition">
-        ✕
-      </button>
+      <button id="btn-cerrar-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-sm p-1 rounded-lg transition">✕</button>
 
       <div class="flex items-center gap-3 mb-6">
         <div class="w-10 h-10 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-bold">
@@ -246,42 +270,32 @@
           <label class="block text-xs font-medium text-gray-300 mb-1">Usuario</label>
           <input type="text" id="login-usuario" required placeholder="Ingresa tu usuario" class="w-full bg-[#27272a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500 transition">
         </div>
-
         <div>
           <label class="block text-xs font-medium text-gray-300 mb-1">Contraseña</label>
           <input type="password" id="login-clave" required placeholder="••••••••" class="w-full bg-[#27272a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500 transition">
         </div>
 
-        <p id="login-error" class="text-xs text-red-400 hidden text-center font-medium">
-          Usuario o contraseña incorrectos.
-        </p>
+        <p id="login-error" class="text-xs text-red-400 hidden text-center font-medium">Usuario o contraseña incorrectos.</p>
 
         <button type="submit" class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-medium text-xs rounded-lg transition shadow-lg shadow-orange-500/20 active:scale-95">
           Iniciar Sesión
         </button>
       </form>
-
     </div>
   </div>
 
-  <!-- Inicializar íconos Lucide -->
-  <script>
-    lucide.createIcons();
-  </script>
+  <script>lucide.createIcons();</script>
 
-  <!-- Script de Conexión Supabase + Autenticación + Carga de Galería -->
   <script>
     const SUPABASE_URL = 'https://vqjgepiqnpiglkloeexa.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_gOdQYGPUCFAxvOmO52_DNQ_lUrUrdKp';
     const BUCKET_NAME = 'fotos-portafolio';
     
-    // Credenciales de acceso
     const USUARIO_ADMIN = 'rodrigo.f';
     const CLAVE_ADMIN = 'huala146';
 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 🔑 Lógica del Modal de Login
     const modalLogin = document.getElementById('modal-login');
     const formLogin = document.getElementById('form-login');
     const loginError = document.getElementById('login-error');
@@ -303,28 +317,25 @@
       }
     }
 
-    // Eventos de click en las fotos de perfil
     document.getElementById('btn-login-desktop')?.addEventListener('click', abrirModalLogin);
     document.getElementById('btn-login-mobile')?.addEventListener('click', abrirModalLogin);
     document.getElementById('btn-cerrar-modal')?.addEventListener('click', cerrarModalLogin);
 
-    modalLogin?.addEventListener('click', (e) => {
-      if (e.target === modalLogin) cerrarModalLogin();
-    });
+    modalLogin?.addEventListener('click', (e) => { if (e.target === modalLogin) cerrarModalLogin(); });
 
+    // Habilitar la edición directa en el DOM al iniciar sesión
     formLogin?.addEventListener('submit', (e) => {
       e.preventDefault();
-      
-      const usuarioIngresado = document.getElementById('login-usuario').value;
-      const claveIngresada = document.getElementById('login-clave').value;
+      const u = document.getElementById('login-usuario').value;
+      const c = document.getElementById('login-clave').value;
 
-      if (usuarioIngresado === USUARIO_ADMIN && claveIngresada === CLAVE_ADMIN) {
+      if (u === USUARIO_ADMIN && c === CLAVE_ADMIN) {
         cerrarModalLogin();
-        
         const panel = document.getElementById('admin-panel');
         if (panel) {
           panel.classList.remove('hidden');
           panel.scrollIntoView({ behavior: 'smooth' });
+          activarEdicionTexto();
           cargarGaleria();
         }
       } else {
@@ -332,7 +343,47 @@
       }
     });
 
-    // 📷 Cargar Galería desde Supabase
+    // Función para editar texto al hacer click
+    function activarEdicionTexto() {
+      const campos = document.querySelectorAll('.editable-field');
+      campos.forEach(campo => {
+        campo.contentEditable = "true";
+        campo.classList.add('hover:bg-orange-500/10', 'p-1', 'rounded', 'border', 'border-dashed', 'border-orange-500/50', 'cursor-text');
+      });
+    }
+
+    // Actualizar Foto de Perfil desde Supabase
+    document.getElementById('btn-subir-perfil')?.addEventListener('click', async () => {
+      const fileInput = document.getElementById('input-foto-perfil');
+      const file = fileInput?.files[0];
+
+      if (!file) {
+        alert('Selecciona una imagen nueva para tu perfil.');
+        return;
+      }
+
+      const fileName = `perfil_rodrigo_${Date.now()}.jpg`;
+
+      const { data, error } = await _supabase.storage
+        .from(BUCKET_NAME)
+        .upload(fileName, file);
+
+      if (error) {
+        alert('Error al actualizar la foto de perfil: ' + error.message);
+      } else {
+        const { data: publicData } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName);
+        
+        // Actualizar las imágenes inmediatamente en la vista
+        document.getElementById('img-perfil-desktop').src = publicData.publicUrl;
+        document.getElementById('img-perfil-mobile').src = publicData.publicUrl;
+        document.getElementById('img-perfil-hero').src = publicData.publicUrl;
+
+        alert('¡Foto de perfil actualizada con éxito!');
+        fileInput.value = '';
+      }
+    });
+
+    // 📷 Cargar Galería Supabase
     async function cargarGaleria() {
       const contenedorGaleria = document.getElementById('galeria-fotos');
       if (!contenedorGaleria) return;
@@ -343,12 +394,11 @@
           .list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
 
         if (error) {
-          console.error('Error Supabase:', error);
-          contenedorGaleria.innerHTML = `<p class="text-xs text-red-400 col-span-full">Error al conectar con Supabase: ${error.message}</p>`;
+          contenedorGaleria.innerHTML = `<p class="text-xs text-red-400 col-span-full">Error: ${error.message}</p>`;
           return;
         }
 
-        const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder');
+        const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('perfil_'));
 
         if (fotosValidas.length === 0) {
           contenedorGaleria.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Aún no hay fotos en la galería.</p>`;
@@ -356,7 +406,6 @@
         }
 
         contenedorGaleria.innerHTML = '';
-
         const esAdmin = !document.getElementById('admin-panel')?.classList.contains('hidden');
 
         fotosValidas.forEach(file => {
@@ -380,61 +429,57 @@
         });
       } catch (err) {
         console.error(err);
-        contenedorGaleria.innerHTML = `<p class="text-xs text-red-400 col-span-full">Ocurrió un error inesperado al cargar la galería.</p>`;
       }
     }
 
-    // 🗑️ Borrar Foto
     window.eliminarFoto = async function(nombreArchivo) {
       if (!confirm('¿Seguro que deseas eliminar esta imagen?')) return;
-
-      const { error } = await _supabase.storage
-        .from(BUCKET_NAME)
-        .remove([nombreArchivo]);
-
-      if (error) {
-        alert('Error al eliminar: ' + error.message);
-      } else {
-        alert('Imagen eliminada.');
-        cargarGaleria();
-      }
+      const { error } = await _supabase.storage.from(BUCKET_NAME).remove([nombreArchivo]);
+      if (error) alert('Error: ' + error.message);
+      else { alert('Imagen eliminada.'); cargarGaleria(); }
     };
 
-    // Eventos al cargar el documento
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('btn-cerrar-admin')?.addEventListener('click', () => {
         document.getElementById('admin-panel')?.classList.add('hidden');
-        cargarGaleria();
+        window.location.reload();
       });
-
       cargarGaleria();
     });
 
-    // Subir Foto
+    // Subir Foto Galería
     document.getElementById('btn-subir')?.addEventListener('click', async () => {
       const fileInput = document.getElementById('input-foto');
       const file = fileInput?.files[0];
-
-      if (!file) {
-        alert('Por favor selecciona una imagen primero.');
-        return;
-      }
+      if (!file) { alert('Selecciona una imagen.'); return; }
 
       const fileName = `${Date.now()}_${file.name}`;
+      const { error } = await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
 
-      const { data, error } = await _supabase.storage
-        .from(BUCKET_NAME)
-        .upload(fileName, file);
-
-      if (error) {
-        alert('Error al subir la imagen: ' + error.message);
-      } else {
-        alert('¡Imagen publicada con éxito!');
-        fileInput.value = '';
-        cargarGaleria();
-      }
+      if (error) alert('Error: ' + error.message);
+      else { alert('¡Imagen publicada!'); fileInput.value = ''; cargarGaleria(); }
     });
-  </script>
 
+    // Marcador automático de secciones en el índice lateral
+    const observerOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          document.querySelectorAll('aside nav a').forEach(link => {
+            link.classList.remove('bg-orange-500/10', 'text-orange-400');
+            link.classList.add('text-gray-400');
+          });
+          const activeLink = document.querySelector(`aside nav a[href="#${id}"]`);
+          if (activeLink) {
+            activeLink.classList.add('bg-orange-500/10', 'text-orange-400');
+            activeLink.classList.remove('text-gray-400');
+          }
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('main section').forEach(section => observer.observe(section));
+  </script>
 </body>
 </html>
