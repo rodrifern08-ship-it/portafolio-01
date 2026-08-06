@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rodrigo Fernandez - Construcción en Seco</title>
 
-  <!-- Ícono de la pestaña (Favicon) -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="logo.png">
 
   <!-- Tailwind CSS CDN -->
@@ -16,71 +16,71 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Estilo para que cualquier área editable resalte al pasar el cursor o hacer clic */
-    [contenteditable="true"]:hover {
-      outline: 1px dashed #f97316;
-      background-color: rgba(249, 115, 22, 0.05);
+    /* Estilos visuales cuando el modo edición está activo */
+    body.modo-edicion .editable {
+      outline: 2px dashed #f97316 !important;
+      outline-offset: 2px;
+      background-color: rgba(249, 115, 22, 0.08) !important;
       border-radius: 4px;
-      cursor: text;
+      cursor: text !important;
     }
-    [contenteditable="true"]:focus {
-      outline: 2px solid #f97316;
-      background-color: rgba(249, 115, 22, 0.1);
-      border-radius: 4px;
+    body.modo-edicion .editable:focus {
+      outline: 2px solid #ea580c !important;
+      background-color: rgba(249, 115, 22, 0.15) !important;
     }
   </style>
 </head>
 <body class="bg-[#0f0f12] text-gray-200 font-sans min-h-screen flex flex-col">
 
-  <div class="flex flex-1 w-full relative">
+  <!-- Contenedor Principal: items-start es la clave para que el sticky del sidebar funcione -->
+  <div class="flex items-start w-full relative min-h-screen">
     
-    <!-- Sidebar / Navegación Lateral FIJA (Baja con la página) -->
+    <!-- Sidebar / Navegación Lateral FIJA -->
     <aside class="w-64 bg-[#141417] border-r border-gray-800 p-6 hidden md:flex flex-col justify-between shrink-0 sticky top-0 h-screen overflow-y-auto z-40">
       <div>
-        <!-- Botón Editar Menú (Lápiz Admin) -->
+        <!-- Botón para alternar edición -->
         <div class="flex justify-between items-center mb-6">
           <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Navegación</p>
-          <button id="btn-edit-toggle-side" class="p-1 rounded bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Activar/Desactivar Edición">
-            <i data-lucide="pencil" class="w-3 h-3"></i> Editar
+          <button id="btn-toggle-edit-side" class="px-2 py-1 rounded bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1 font-medium">
+            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> <span id="txt-btn-edit-side">Editar Web</span>
           </button>
         </div>
 
         <div class="flex items-center gap-3 mb-8">
-          <!-- Foto de Perfil / Login Admin Desktop -->
-          <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0 relative">
+          <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0">
             <img id="img-perfil-desktop" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
           </button>
           <div>
-            <h2 class="text-white font-bold text-sm editable-field" contenteditable="true">Rodrigo Fernandez</h2>
-            <p class="text-xs text-gray-400 editable-field" contenteditable="true">Construcción en seco</p>
+            <h2 class="text-white font-bold text-sm editable" id="side-nombre">Rodrigo Fernandez</h2>
+            <p class="text-xs text-gray-400 editable" id="side-rubro">Construcción en seco</p>
           </div>
         </div>
 
         <!-- Enlaces del Menú -->
         <nav class="space-y-2" id="nav-menu">
-          <a href="#perfil" class="nav-item flex items-center gap-3 px-3 py-2 bg-orange-500/10 text-orange-400 font-medium rounded-lg text-sm transition">
+          <a href="#perfil" class="nav-link flex items-center gap-3 px-3 py-2 bg-orange-500/10 text-orange-400 font-medium rounded-lg text-sm transition">
             <i data-lucide="user" class="w-4 h-4 shrink-0"></i>
-            <span class="editable-field" contenteditable="true">Perfil Principal</span>
+            <span class="editable">Perfil Principal</span>
           </a>
-          <a href="#galeria" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#galeria" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="image" class="w-4 h-4 shrink-0"></i>
-            <span class="editable-field" contenteditable="true">Galería de Fotos</span>
+            <span class="editable">Galería de Fotos</span>
           </a>
-          <a href="#habilidades" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#habilidades" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="wrench" class="w-4 h-4 shrink-0"></i>
-            <span class="editable-field" contenteditable="true">Habilidades</span>
+            <span class="editable">Habilidades</span>
           </a>
-          <a href="#experiencia" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#experiencia" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="briefcase" class="w-4 h-4 shrink-0"></i>
-            <span class="editable-field" contenteditable="true">Experiencia / Trabajos</span>
+            <span class="editable">Experiencia / Trabajos</span>
           </a>
-          <a href="#ubicacion" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#ubicacion" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i>
-            <span class="editable-field" contenteditable="true">Zona de Trabajo</span>
+            <span class="editable">Zona de Trabajo</span>
           </a>
-          <a href="#contacto" class="nav-item flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#contacto" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="phone" class="w-4 h-4 shrink-0"></i>
-            <span class="editable-field" contenteditable="true">Contactos</span>
+            <span class="editable">Contactos</span>
           </a>
         </nav>
       </div>
@@ -100,10 +100,13 @@
             <img id="img-perfil-mobile" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
           </button>
           <div>
-            <h1 class="text-white font-bold text-sm editable-field" contenteditable="true">Rodrigo Fernandez</h1>
-            <p class="text-xs text-gray-400 editable-field" contenteditable="true">Construcción en seco</p>
+            <h1 class="text-white font-bold text-sm editable">Rodrigo Fernandez</h1>
+            <p class="text-xs text-gray-400 editable">Construcción en seco</p>
           </div>
         </div>
+        <button id="btn-toggle-edit-main" class="p-2 bg-orange-500/20 text-orange-400 rounded-lg text-xs font-medium">
+          <i data-lucide="edit-3" class="w-4 h-4"></i>
+        </button>
       </header>
 
       <!-- Panel Admin para Gestión de Fotos -->
@@ -111,7 +114,7 @@
         <div class="flex items-center justify-between border-b border-gray-800 pb-3">
           <h3 class="text-white font-bold flex items-center gap-2">
             <i data-lucide="shield-check" class="w-5 h-5 text-orange-500"></i>
-            Panel Administrador Activado
+            Panel Administrador
           </h3>
           <button id="btn-cerrar-admin" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs rounded-lg transition">
             Cerrar Sesión
@@ -126,38 +129,32 @@
             </label>
             <input type="file" id="input-foto-perfil" accept="image/*" class="text-xs text-gray-400 block w-full file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-orange-500/20 file:text-orange-400">
             <button id="btn-subir-perfil" class="mt-2 w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded-lg font-medium transition">
-              Actualizar Imagen de Perfil
+              Actualizar Imagen
             </button>
           </div>
 
           <!-- Subir Foto a Galería -->
           <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800">
             <label class="block text-xs font-medium text-orange-400 mb-2 flex items-center gap-2">
-              <i data-lucide="upload-cloud" class="w-4 h-4"></i> Subir Proyecto a Galería
+              <i data-lucide="upload-cloud" class="w-4 h-4"></i> Subir Foto a Galería
             </label>
             <input type="file" id="input-foto" accept="image/*" class="text-xs text-gray-400 block w-full file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-orange-500/20 file:text-orange-400">
             <button id="btn-subir" class="mt-2 w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded-lg font-medium transition">
-              Publicar en Galería
+              Publicar Foto
             </button>
           </div>
         </div>
       </div>
 
       <!-- Tarjeta Perfil Principal -->
-      <section id="perfil" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
-          <i data-lucide="pencil" class="w-4 h-4"></i>
-        </button>
-
+      <section id="perfil" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <div class="flex flex-col md:flex-row items-center gap-6 mb-4">
-          <div class="relative group">
-            <img id="img-perfil-hero" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-orange-500 shadow-xl">
-          </div>
+          <img id="img-perfil-hero" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-orange-500 shadow-xl">
 
-          <div class="text-center md:text-left flex-1 space-y-1">
-            <h1 class="text-2xl font-bold text-white editable-field" contenteditable="true">Rodrigo Fernandez</h1>
-            <p class="text-sm text-orange-400 font-medium editable-field" contenteditable="true">Especialista en Construcción en Seco</p>
-            <p class="text-xs text-gray-400 leading-relaxed editable-field" contenteditable="true">
+          <div class="text-center md:text-left flex-1 space-y-2">
+            <h1 class="text-2xl font-bold text-white editable">Rodrigo Fernandez</h1>
+            <p class="text-sm text-orange-400 font-medium editable">Especialista en Construcción en Seco</p>
+            <p class="text-xs text-gray-400 leading-relaxed editable">
               Servicios profesionales de Steel Framing, armado de tabiques, cielorrasos suspendidos y terminaciones finas de masillado.
             </p>
           </div>
@@ -169,94 +166,62 @@
       </section>
 
       <!-- Galería de Fotos -->
-      <section id="galeria" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
-          <i data-lucide="pencil" class="w-4 h-4"></i>
-        </button>
-
+      <section id="galeria" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="image" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field" contenteditable="true">Fotos de Trabajo y Proyectos</span>
+          <span class="editable">Fotos de Trabajo y Proyectos</span>
         </h2>
         <div id="galeria-fotos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <p class="text-xs text-gray-500 col-span-full">Cargando imágenes de la galería...</p>
         </div>
       </section>
 
-      <!-- Sección Habilidades -->
-      <section id="habilidades" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
-          <i data-lucide="pencil" class="w-4 h-4"></i>
-        </button>
-
+      <!-- Habilidades -->
+      <section id="habilidades" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="wrench" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field" contenteditable="true">Habilidades y Especialidades</span>
+          <span class="editable">Habilidades y Especialidades</span>
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
-            ⚡ Armado de Estructuras Metálicas (Steel Framing)
-          </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
-            🧱 Emplacado de Durlock / Placas de Yeso
-          </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
-            ✨ Tapado de Juntas y Macillado
-          </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
-            🏠 Cielorrasos Suspendidos y Desmontables
-          </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
-            🔇 Aislamiento Acústico y Térmico
-          </div>
-          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable-field" contenteditable="true">
-            📐 Lectura e Interpretación de Planos
-          </div>
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable">⚡ Armado de Estructuras Metálicas (Steel Framing)</div>
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable">🧱 Emplacado de Durlock / Placas de Yeso</div>
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable">✨ Tapado de Juntas y Masillado</div>
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable">🏠 Cielorrasos Suspendidos y Desmontables</div>
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable">🔇 Aislamiento Acústico y Térmico</div>
+          <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800 text-sm text-gray-300 editable">📐 Lectura e Interpretación de Planos</div>
         </div>
       </section>
 
-      <!-- Sección Experiencia -->
-      <section id="experiencia" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
-          <i data-lucide="pencil" class="w-4 h-4"></i>
-        </button>
-
+      <!-- Experiencia -->
+      <section id="experiencia" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="briefcase" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field" contenteditable="true">Experiencia Laboral</span>
+          <span class="editable">Experiencia Laboral</span>
         </h2>
         <div class="space-y-4">
           <div class="border-l-2 border-orange-500 pl-4 py-1">
-            <h3 class="text-white font-semibold text-base editable-field" contenteditable="true">Especialista en Construcción en Seco</h3>
-            <p class="text-xs text-gray-400 editable-field" contenteditable="true">Trabajos Particulares & Obras • 2020 - Presente</p>
-            <p class="text-sm text-gray-300 mt-2 editable-field" contenteditable="true">
-              Realización de tabiques divisorios, cielorrasos suspendidos y terminaciones finas de masilla en obras residenciales y comerciales.
-            </p>
+            <h3 class="text-white font-semibold text-base editable">Especialista en Construcción en Seco</h3>
+            <p class="text-xs text-gray-400 editable">Trabajos Particulares & Obras • 2020 - Presente</p>
+            <p class="text-sm text-gray-300 mt-2 editable">Realización de tabiques divisorios, cielorrasos suspendidos y terminaciones finas en obras.</p>
           </div>
           <div class="border-l-2 border-gray-700 pl-4 py-1">
-            <h3 class="text-white font-semibold text-base editable-field" contenteditable="true">Montador de Durlock y Estructuras</h3>
-            <p class="text-xs text-gray-400 editable-field" contenteditable="true">Empresa de Construcción / Obras • 2018 - 2020</p>
-            <p class="text-sm text-gray-300 mt-2 editable-field" contenteditable="true">
-              Armado de perfiles de acero galvanizado, colocación de aislantes térmicos y emplacado general.
-            </p>
+            <h3 class="text-white font-semibold text-base editable">Montador de Durlock y Estructuras</h3>
+            <p class="text-xs text-gray-400 editable">Empresa de Construcción / Obras • 2018 - 2020</p>
+            <p class="text-sm text-gray-300 mt-2 editable">Armado de perfiles de acero galvanizado, colocación de aislantes térmicos y emplacado.</p>
           </div>
         </div>
       </section>
 
-      <!-- Sección Ubicación -->
-      <section id="ubicacion" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
-          <i data-lucide="pencil" class="w-4 h-4"></i>
-        </button>
-
+      <!-- Ubicación -->
+      <section id="ubicacion" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="map-pin" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field" contenteditable="true">Zona de Trabajo</span>
+          <span class="editable">Zona de Trabajo</span>
         </h2>
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#27272a] p-4 rounded-lg border border-gray-800">
           <div>
-            <h3 class="text-white font-medium text-base editable-field" contenteditable="true">Atención y Presupuestos sin Cargo</h3>
-            <p class="text-sm text-gray-400 editable-field" contenteditable="true">Disponible para obras y reformas en toda la zona y alrededores.</p>
+            <h3 class="text-white font-medium text-base editable">Atención y Presupuestos sin Cargo</h3>
+            <p class="text-sm text-gray-400 editable">Disponible para obras y reformas en toda la zona y alrededores.</p>
           </div>
           <a href="https://w.app/t4pofa" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-lg transition flex items-center gap-2 shrink-0">
             <i data-lucide="message-circle" class="w-4 h-4"></i>
@@ -265,15 +230,11 @@
         </div>
       </section>
 
-      <!-- Sección Contacto -->
-      <section id="contacto" class="content-section bg-[#18181c] border border-gray-800 rounded-xl p-6 relative">
-        <button class="absolute top-4 right-4 p-1.5 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1" title="Haz clic en cualquier texto para editar">
-          <i data-lucide="pencil" class="w-4 h-4"></i>
-        </button>
-
+      <!-- Contacto -->
+      <section id="contacto" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="phone" class="w-5 h-5 text-orange-500"></i>
-          <span class="editable-field" contenteditable="true">Medios de Contacto</span>
+          <span class="editable">Medios de Contacto</span>
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <a href="https://w.app/t4pofa" target="_blank" class="bg-[#27272a] border border-gray-800 hover:border-emerald-500/50 p-4 rounded-xl transition flex items-center gap-4 group">
@@ -292,7 +253,7 @@
             </div>
             <div>
               <p class="text-xs text-gray-400 font-medium">Correo Electrónico</p>
-              <p id="txt-email" class="text-white font-bold text-sm editable-field" contenteditable="true">rodrigoconstrucciones323@gmail.com</p>
+              <p class="text-white font-bold text-sm editable">rodrigoconstrucciones323@gmail.com</p>
             </div>
           </a>
         </div>
@@ -301,36 +262,29 @@
     </main>
   </div>
 
-  <!-- Modal Emergente Login Admin -->
+  <!-- Botón Flotante para Activar Edición Rápida -->
+  <button id="btn-float-edit" class="fixed bottom-4 right-4 z-50 bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 text-xs transition active:scale-95">
+    <i data-lucide="edit" class="w-4 h-4"></i> Modo Edición
+  </button>
+
+  <!-- Modal Login Admin -->
   <div id="modal-login" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-[#18181c] border border-gray-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl relative">
-      <button id="btn-cerrar-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-sm p-1 rounded-lg transition">✕</button>
-
-      <div class="flex items-center gap-3 mb-6">
-        <div class="w-10 h-10 rounded-full bg-orange-500/20 text-orange-500 border border-orange-500/30 flex items-center justify-center font-bold">
-          <i data-lucide="lock" class="w-5 h-5"></i>
-        </div>
-        <div>
-          <h3 class="text-white font-bold text-base">Acceso Administrador</h3>
-          <p class="text-xs text-gray-400">Ingresa tus datos para gestionar la web</p>
-        </div>
-      </div>
-
+      <button id="btn-cerrar-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-sm">✕</button>
+      <h3 class="text-white font-bold text-base mb-4 flex items-center gap-2">
+        <i data-lucide="lock" class="w-4 h-4 text-orange-500"></i> Acceso Administrador
+      </h3>
       <form id="form-login" class="space-y-4">
         <div>
           <label class="block text-xs font-medium text-gray-300 mb-1">Usuario</label>
-          <input type="text" id="login-usuario" required placeholder="Ingresa tu usuario" class="w-full bg-[#27272a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500 transition">
+          <input type="text" id="login-usuario" required class="w-full bg-[#27272a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500">
         </div>
         <div>
           <label class="block text-xs font-medium text-gray-300 mb-1">Contraseña</label>
-          <input type="password" id="login-clave" required placeholder="••••••••" class="w-full bg-[#27272a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500 transition">
+          <input type="password" id="login-clave" required class="w-full bg-[#27272a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500">
         </div>
-
-        <p id="login-error" class="text-xs text-red-400 hidden text-center font-medium">Usuario o contraseña incorrectos.</p>
-
-        <button type="submit" class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-medium text-xs rounded-lg transition shadow-lg shadow-orange-500/20 active:scale-95">
-          Iniciar Sesión
-        </button>
+        <p id="login-error" class="text-xs text-red-400 hidden text-center font-medium">Datos incorrectos.</p>
+        <button type="submit" class="w-full py-2 bg-orange-500 text-white font-medium text-xs rounded-lg">Entrar</button>
       </form>
     </div>
   </div>
@@ -341,154 +295,63 @@
     const SUPABASE_URL = 'https://vqjgepiqnpiglkloeexa.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_gOdQYGPUCFAxvOmO52_DNQ_lUrUrdKp';
     const BUCKET_NAME = 'fotos-portafolio';
-    
-    const USUARIO_ADMIN = 'rodrigo.f';
-    const CLAVE_ADMIN = 'huala146';
-
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Modal Login
+    // SISTEMA DE EDICIÓN INTERACTIVO
+    let modoEdicionActivo = false;
+
+    function alternarModoEdicion() {
+      modoEdicionActivo = !modoEdicionActivo;
+      const editables = document.querySelectorAll('.editable');
+
+      if (modoEdicionActivo) {
+        document.body.classList.add('modo-edicion');
+        editables.forEach(el => el.setAttribute('contenteditable', 'true'));
+        document.getElementById('txt-btn-edit-side').innerText = "Listo (Guardar)";
+      } else {
+        document.body.classList.remove('modo-edicion');
+        editables.forEach(el => el.removeAttribute('contenteditable'));
+        document.getElementById('txt-btn-edit-side').innerText = "Editar Web";
+      }
+    }
+
+    document.getElementById('btn-toggle-edit-side')?.addEventListener('click', alternarModoEdicion);
+    document.getElementById('btn-toggle-edit-main')?.addEventListener('click', alternarModoEdicion);
+    document.getElementById('btn-float-edit')?.addEventListener('click', alternarModoEdicion);
+
+    // Prevenir redirecciones de enlaces en modo edición
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        if (modoEdicionActivo) {
+          e.preventDefault();
+        }
+      });
+    });
+
+    // SISTEMA DE LOGIN Y MODAL
     const modalLogin = document.getElementById('modal-login');
-    const formLogin = document.getElementById('form-login');
-    const loginError = document.getElementById('login-error');
+    const abrirLogin = () => { modalLogin.classList.remove('hidden'); modalLogin.classList.add('flex'); };
+    const cerrarLogin = () => { modalLogin.classList.add('hidden'); modalLogin.classList.remove('flex'); };
 
-    function abrirModalLogin() {
-      if (modalLogin) {
-        modalLogin.classList.remove('hidden');
-        modalLogin.classList.add('flex');
-        loginError?.classList.add('hidden');
-        document.getElementById('login-usuario')?.focus();
-      }
-    }
+    document.getElementById('btn-login-desktop')?.addEventListener('click', abrirLogin);
+    document.getElementById('btn-login-mobile')?.addEventListener('click', abrirLogin);
+    document.getElementById('btn-cerrar-modal')?.addEventListener('click', cerrarLogin);
 
-    function cerrarModalLogin() {
-      if (modalLogin) {
-        modalLogin.classList.add('hidden');
-        modalLogin.classList.remove('flex');
-        formLogin?.reset();
-      }
-    }
-
-    document.getElementById('btn-login-desktop')?.addEventListener('click', abrirModalLogin);
-    document.getElementById('btn-login-mobile')?.addEventListener('click', abrirModalLogin);
-    document.getElementById('btn-cerrar-modal')?.addEventListener('click', cerrarModalLogin);
-
-    modalLogin?.addEventListener('click', (e) => { if (e.target === modalLogin) cerrarModalLogin(); });
-
-    formLogin?.addEventListener('submit', (e) => {
+    document.getElementById('form-login')?.addEventListener('submit', (e) => {
       e.preventDefault();
       const u = document.getElementById('login-usuario').value;
       const c = document.getElementById('login-clave').value;
 
-      if (u === USUARIO_ADMIN && c === CLAVE_ADMIN) {
-        cerrarModalLogin();
+      if (u === 'rodrigo.f' && c === 'huala146') {
+        cerrarLogin();
         document.getElementById('admin-panel')?.classList.remove('hidden');
         cargarGaleria();
       } else {
-        loginError?.classList.remove('hidden');
+        document.getElementById('login-error')?.classList.remove('hidden');
       }
     });
 
-    // Subir Foto Perfil Supabase
-    document.getElementById('btn-subir-perfil')?.addEventListener('click', async () => {
-      const fileInput = document.getElementById('input-foto-perfil');
-      const file = fileInput?.files[0];
-
-      if (!file) { alert('Selecciona una imagen primero.'); return; }
-
-      const fileName = `perfil_rodrigo_${Date.now()}.jpeg`;
-      const { data, error } = await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
-
-      if (error) {
-        alert('Error: ' + error.message);
-      } else {
-        const { data: publicData } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName);
-        document.getElementById('img-perfil-desktop').src = publicData.publicUrl;
-        document.getElementById('img-perfil-mobile').src = publicData.publicUrl;
-        document.getElementById('img-perfil-hero').src = publicData.publicUrl;
-        alert('¡Foto de perfil actualizada!');
-        fileInput.value = '';
-      }
-    });
-
-    // Cargar Galería
-    async function cargarGaleria() {
-      const contenedorGaleria = document.getElementById('galeria-fotos');
-      if (!contenedorGaleria) return;
-
-      try {
-        const { data: files, error } = await _supabase.storage
-          .from(BUCKET_NAME)
-          .list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
-
-        if (error) {
-          contenedorGaleria.innerHTML = `<p class="text-xs text-red-400 col-span-full">Error: ${error.message}</p>`;
-          return;
-        }
-
-        const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('perfil_'));
-
-        if (fotosValidas.length === 0) {
-          contenedorGaleria.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Aún no hay fotos en la galería.</p>`;
-          return;
-        }
-
-        contenedorGaleria.innerHTML = '';
-        const esAdmin = !document.getElementById('admin-panel')?.classList.contains('hidden');
-
-        fotosValidas.forEach(file => {
-          const { data } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(file.name);
-          const nombreMostrar = file.name.split('_').slice(1).join('_') || 'Proyecto de Construcción';
-
-          const card = document.createElement('div');
-          card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg transition hover:border-orange-500/40 relative';
-          card.innerHTML = `
-            <img src="${data.publicUrl}" alt="${nombreMostrar}" class="w-full h-48 object-cover">
-            <div class="p-3 flex justify-between items-center">
-              <p class="text-xs text-gray-300 font-medium truncate editable-field" contenteditable="true">${nombreMostrar}</p>
-              ${esAdmin ? `
-                <button onclick="eliminarFoto('${file.name}')" class="px-2 py-1 bg-red-600/80 hover:bg-red-600 text-white text-[10px] rounded transition">
-                  Eliminar
-                </button>
-              ` : ''}
-            </div>
-          `;
-          contenedorGaleria.appendChild(card);
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    window.eliminarFoto = async function(nombreArchivo) {
-      if (!confirm('¿Seguro que deseas eliminar esta imagen?')) return;
-      const { error } = await _supabase.storage.from(BUCKET_NAME).remove([nombreArchivo]);
-      if (error) alert('Error: ' + error.message);
-      else { alert('Imagen eliminada.'); cargarGaleria(); }
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('btn-cerrar-admin')?.addEventListener('click', () => {
-        document.getElementById('admin-panel')?.classList.add('hidden');
-        window.location.reload();
-      });
-      cargarGaleria();
-    });
-
-    // Subir Foto Galería
-    document.getElementById('btn-subir')?.addEventListener('click', async () => {
-      const fileInput = document.getElementById('input-foto');
-      const file = fileInput?.files[0];
-      if (!file) { alert('Selecciona una imagen.'); return; }
-
-      const fileName = `${Date.now()}_${file.name}`;
-      const { error } = await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
-
-      if (error) alert('Error: ' + error.message);
-      else { alert('¡Imagen publicada!'); fileInput.value = ''; cargarGaleria(); }
-    });
-
-    // MARCADOR AUTOMÁTICO DE SECCIÓN ACTIVA AL HACER SCROLL
+    // CONTROL DEL SCROLL Y MENÚ ACTIVO
     window.addEventListener('scroll', () => {
       const sections = document.querySelectorAll('main section');
       const navLinks = document.querySelectorAll('#nav-menu a');
@@ -496,9 +359,8 @@
       let currentSectionId = '';
 
       sections.forEach(section => {
-        const sectionTop = section.offsetTop - 120;
-        const sectionHeight = section.offsetHeight;
-        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+        const sectionTop = section.offsetTop - 150;
+        if (window.scrollY >= sectionTop) {
           currentSectionId = section.getAttribute('id');
         }
       });
@@ -513,6 +375,45 @@
         }
       });
     });
+
+    // CARGA DE FOTOS DESDE SUPABASE
+    async function cargarGaleria() {
+      const contenedorGaleria = document.getElementById('galeria-fotos');
+      if (!contenedorGaleria) return;
+
+      try {
+        const { data: files, error } = await _supabase.storage
+          .from(BUCKET_NAME)
+          .list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
+
+        if (error || !files) return;
+
+        const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('perfil_'));
+
+        if (fotosValidas.length === 0) {
+          contenedorGaleria.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Aún no hay fotos cargadas.</p>`;
+          return;
+        }
+
+        contenedorGaleria.innerHTML = '';
+        fotosValidas.forEach(file => {
+          const { data } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(file.name);
+          const card = document.createElement('div');
+          card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg';
+          card.innerHTML = `
+            <img src="${data.publicUrl}" class="w-full h-48 object-cover">
+            <div class="p-3">
+              <p class="text-xs text-gray-300 font-medium editable">${file.name.split('_').slice(1).join('_') || 'Proyecto'}</p>
+            </div>
+          `;
+          contenedorGaleria.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', cargarGaleria);
   </script>
 </body>
 </html>
