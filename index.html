@@ -27,6 +27,12 @@
       outline: 2px solid #ea580c !important;
       background-color: rgba(249, 115, 22, 0.15) !important;
     }
+    /* Clase activa para el scrollspy */
+    .nav-link.active {
+      background-color: rgba(249, 115, 22, 0.15) !important;
+      color: #fb923c !important;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body class="bg-[#0f0f12] text-gray-200 font-sans min-h-screen flex flex-col">
@@ -38,15 +44,15 @@
       <div>
         <div class="flex justify-between items-center mb-6">
           <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Navegación</p>
-          <!-- Oculto por defecto; sólo visible si es admin -->
-          <button id="btn-toggle-edit-side" class="hidden px-2 py-1 rounded bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs flex items-center gap-1 font-medium">
+          <!-- Botón de edición oculto por defecto -->
+          <button id="btn-toggle-edit-side" class="hidden px-2 py-1 rounded bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 transition text-xs items-center gap-1 font-medium">
             <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> <span id="txt-btn-edit-side">Editar Web</span>
           </button>
         </div>
 
         <div class="flex items-center gap-3 mb-8">
-          <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0">
-            <img id="img-perfil-desktop" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
+          <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0 bg-gray-800 flex items-center justify-center">
+            <img id="img-perfil-desktop" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Rodrigo+Fernandez&background=27272a&color=f97316';">
           </button>
           <div>
             <h2 class="text-white font-bold text-sm editable">Rodrigo Fernandez</h2>
@@ -55,29 +61,29 @@
         </div>
 
         <nav class="space-y-2" id="nav-menu">
-          <a href="#perfil" class="nav-link flex items-center gap-3 px-3 py-2 bg-orange-500/10 text-orange-400 font-medium rounded-lg text-sm transition">
+          <a href="#perfil" id="link-perfil" class="nav-link active flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="user" class="w-4 h-4 shrink-0"></i>
-            <span class="editable">Perfil Principal</span>
+            <span>Perfil Principal</span>
           </a>
-          <a href="#galeria" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#galeria" id="link-galeria" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="image" class="w-4 h-4 shrink-0"></i>
-            <span class="editable">Galería de Fotos</span>
+            <span>Galería de Fotos</span>
           </a>
-          <a href="#habilidades" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#habilidades" id="link-habilidades" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="wrench" class="w-4 h-4 shrink-0"></i>
-            <span class="editable">Habilidades</span>
+            <span>Habilidades</span>
           </a>
-          <a href="#experiencia" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#experiencia" id="link-experiencia" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="briefcase" class="w-4 h-4 shrink-0"></i>
-            <span class="editable">Experiencia / Trabajos</span>
+            <span>Experiencia / Trabajos</span>
           </a>
-          <a href="#ubicacion" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#ubicacion" id="link-ubicacion" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i>
-            <span class="editable">Zona de Trabajo</span>
+            <span>Zona de Trabajo</span>
           </a>
-          <a href="#contacto" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+          <a href="#contacto" id="link-contacto" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="phone" class="w-4 h-4 shrink-0"></i>
-            <span class="editable">Contactos</span>
+            <span>Contactos</span>
           </a>
         </nav>
       </div>
@@ -93,15 +99,15 @@
       <!-- Header Móvil -->
       <header class="flex items-center justify-between md:hidden bg-[#141417] p-4 rounded-xl border border-gray-800 sticky top-2 z-30 shadow-lg">
         <div class="flex items-center gap-3">
-          <button id="btn-login-mobile" title="Acceso Administrador" class="w-9 h-9 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer shrink-0">
-            <img id="img-perfil-mobile" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover">
+          <button id="btn-login-mobile" title="Acceso Administrador" class="w-9 h-9 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer shrink-0 bg-gray-800 flex items-center justify-center">
+            <img id="img-perfil-mobile" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Rodrigo+Fernandez&background=27272a&color=f97316';">
           </button>
           <div>
             <h1 class="text-white font-bold text-sm editable">Rodrigo Fernandez</h1>
             <p class="text-xs text-gray-400 editable">Construcción en seco</p>
           </div>
         </div>
-        <!-- Oculto por defecto -->
+        <!-- Botón móvil oculto por defecto -->
         <button id="btn-toggle-edit-main" class="hidden p-2 bg-orange-500/20 text-orange-400 rounded-lg text-xs font-medium">
           <i data-lucide="edit-3" class="w-4 h-4"></i>
         </button>
@@ -127,7 +133,7 @@
             </label>
             <input type="file" id="input-foto-perfil" accept="image/*" class="text-xs text-gray-400 block w-full file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-orange-500/20 file:text-orange-400">
             <button id="btn-subir-perfil" class="mt-2 w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-xs rounded-lg font-medium transition">
-              Actualizar y Guardar Foto
+              Actualizar Imagen
             </button>
           </div>
 
@@ -145,9 +151,9 @@
       </div>
 
       <!-- Sección Perfil Principal -->
-      <section id="perfil" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
+      <section id="perfil" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 scroll-mt-6">
         <div class="flex flex-col md:flex-row items-center gap-6 mb-4">
-          <img id="img-perfil-hero" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-orange-500 shadow-xl">
+          <img id="img-perfil-hero" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-orange-500 shadow-xl bg-gray-800" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Rodrigo+Fernandez&background=27272a&color=f97316';">
 
           <div class="text-center md:text-left flex-1 space-y-2">
             <h1 class="text-2xl font-bold text-white editable">Rodrigo Fernandez</h1>
@@ -164,7 +170,7 @@
       </section>
 
       <!-- Galería -->
-      <section id="galeria" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
+      <section id="galeria" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 scroll-mt-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="image" class="w-5 h-5 text-orange-500"></i>
           <span class="editable">Fotos de Trabajo y Proyectos</span>
@@ -175,7 +181,7 @@
       </section>
 
       <!-- Habilidades -->
-      <section id="habilidades" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
+      <section id="habilidades" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 scroll-mt-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="wrench" class="w-5 h-5 text-orange-500"></i>
           <span class="editable">Habilidades y Especialidades</span>
@@ -191,7 +197,7 @@
       </section>
 
       <!-- Experiencia -->
-      <section id="experiencia" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
+      <section id="experiencia" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 scroll-mt-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="briefcase" class="w-5 h-5 text-orange-500"></i>
           <span class="editable">Experiencia Laboral</span>
@@ -211,7 +217,7 @@
       </section>
 
       <!-- Ubicación -->
-      <section id="ubicacion" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
+      <section id="ubicacion" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 scroll-mt-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="map-pin" class="w-5 h-5 text-orange-500"></i>
           <span class="editable">Zona de Trabajo</span>
@@ -229,7 +235,7 @@
       </section>
 
       <!-- Contacto -->
-      <section id="contacto" class="bg-[#18181c] border border-gray-800 rounded-xl p-6">
+      <section id="contacto" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 scroll-mt-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="phone" class="w-5 h-5 text-orange-500"></i>
           <span class="editable">Medios de Contacto</span>
@@ -260,7 +266,7 @@
     </main>
   </div>
 
-  <!-- Botón Flotante Modo Edición (Oculto por defecto) -->
+  <!-- Botón Flotante Modo Edición -->
   <button id="btn-float-edit" class="hidden fixed bottom-4 right-4 z-50 bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 text-xs transition active:scale-95">
     <i data-lucide="edit" class="w-4 h-4"></i> Modo Edición
   </button>
@@ -287,8 +293,6 @@
     </div>
   </div>
 
-  <script>lucide.createIcons();</script>
-
   <script>
     const SUPABASE_URL = 'https://vqjgepiqnpiglkloeexa.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_gOdQYGPUCFAxvOmO52_DNQ_lUrUrdKp';
@@ -297,7 +301,7 @@
 
     let esAdmin = false;
 
-    // ACTUALIZAR IMÁGENES EN PANTALLA
+    // ACTUALIZAR IMÁGENES DE PERFIL EN TODAS LAS SECCIONES
     function actualizarImagenesPerfil(url) {
       if (!url) return;
       document.getElementById('img-perfil-desktop').src = url;
@@ -305,57 +309,62 @@
       document.getElementById('img-perfil-hero').src = url;
     }
 
-    // CARGAR FOTO DE PERFIL DESDE SUPABASE Y LOCALSTORAGE
+    // CARGAR FOTO DE PERFIL DESDE LOCAL O SUPABASE
     async function cargarFotoPerfilGuardada() {
-      // 1. Mostrar de inmediato la del localStorage si existe (para carga rápida)
       const urlLocal = localStorage.getItem('foto_perfil_rodrigo');
-      if (urlLocal) actualizarImagenesPerfil(urlLocal);
+      if (urlLocal) {
+        actualizarImagenesPerfil(urlLocal);
+      }
 
-      // 2. Consultar a Supabase la última foto guardada en el bucket
       try {
         const { data: files, error } = await _supabase.storage
           .from(BUCKET_NAME)
-          .list('', { limit: 100, sortBy: { column: 'created_at', order: 'desc' } });
+          .list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
 
-        if (!error && files) {
+        if (!error && files && files.length > 0) {
           const fotoPerfil = files.find(f => f.name.startsWith('perfil_'));
           if (fotoPerfil) {
             const { data } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(fotoPerfil.name);
-            const publicUrl = data.publicUrl;
-            actualizarImagenesPerfil(publicUrl);
-            localStorage.setItem('foto_perfil_rodrigo', publicUrl);
+            if (data && data.publicUrl) {
+              actualizarImagenesPerfil(data.publicUrl);
+              localStorage.setItem('foto_perfil_rodrigo', data.publicUrl);
+            }
           }
         }
       } catch (e) {
-        console.error("Error al consultar foto de perfil:", e);
+        console.warn("Cargando foto desde respaldo local...", e);
       }
     }
 
-    // SUBIR Y GUARDAR FOTO DE PERFIL
+    function guardarImagenLocal(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          localStorage.setItem('foto_perfil_rodrigo', reader.result);
+          actualizarImagenesPerfil(reader.result);
+          resolve(reader.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // SUBIR FOTO DE PERFIL
     document.getElementById('btn-subir-perfil')?.addEventListener('click', async () => {
       const fileInput = document.getElementById('input-foto-perfil');
       const file = fileInput?.files[0];
 
       if (!file) { alert('Selecciona una imagen primero.'); return; }
 
+      await guardarImagenLocal(file);
+
       const fileName = `perfil_rodrigo_${Date.now()}.jpeg`;
-      const { data, error } = await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
+      await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
 
-      if (error) {
-        alert('Error al subir: ' + error.message);
-      } else {
-        const { data: publicData } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName);
-        const nuevaUrl = publicData.publicUrl;
-
-        localStorage.setItem('foto_perfil_rodrigo', nuevaUrl);
-        actualizarImagenesPerfil(nuevaUrl);
-
-        alert('¡Foto de perfil actualizada exitosamente!');
-        fileInput.value = '';
-      }
+      alert('¡Foto de perfil actualizada!');
+      fileInput.value = '';
     });
 
-    // SUBIR FOTO A LA GALERÍA
+    // SUBIR FOTO A GALERÍA
     document.getElementById('btn-subir')?.addEventListener('click', async () => {
       const fileInput = document.getElementById('input-foto');
       const file = fileInput?.files[0];
@@ -374,6 +383,20 @@
       }
     });
 
+    // ELIMINAR FOTO DE GALERÍA
+    async function eliminarFotoGaleria(fileName) {
+      if (!confirm('¿Estás seguro de que deseas eliminar esta imagen?')) return;
+
+      const { error } = await _supabase.storage.from(BUCKET_NAME).remove([fileName]);
+
+      if (error) {
+        alert('Error al eliminar imagen: ' + error.message);
+      } else {
+        alert('Imagen eliminada correctamente.');
+        cargarGaleria();
+      }
+    }
+
     // SISTEMA MODO EDICIÓN
     let modoEdicionActivo = false;
     function alternarModoEdicion() {
@@ -384,7 +407,7 @@
       if (modoEdicionActivo) {
         document.body.classList.add('modo-edicion');
         editables.forEach(el => el.setAttribute('contenteditable', 'true'));
-        document.getElementById('txt-btn-edit-side').innerText = "Listo (Guardar)";
+        document.getElementById('txt-btn-edit-side').innerText = "Listo";
       } else {
         document.body.classList.remove('modo-edicion');
         editables.forEach(el => el.removeAttribute('contenteditable'));
@@ -405,26 +428,33 @@
     document.getElementById('btn-login-mobile')?.addEventListener('click', abrirLogin);
     document.getElementById('btn-cerrar-modal')?.addEventListener('click', cerrarLogin);
 
-    // MOSTRAR/OCULTAR CONTROLES DE EDICIÓN SEGÚN SESIÓN
+    // ESTADO ADMIN STRICTO
     function aplicarEstadoAdmin(activo) {
       esAdmin = activo;
       const btnSide = document.getElementById('btn-toggle-edit-side');
       const btnMain = document.getElementById('btn-toggle-edit-main');
       const btnFloat = document.getElementById('btn-float-edit');
       const panelAdmin = document.getElementById('admin-panel');
+      const editables = document.querySelectorAll('.editable');
 
       if (activo) {
         btnSide?.classList.remove('hidden');
+        btnSide?.classList.add('flex');
         btnMain?.classList.remove('hidden');
         btnFloat?.classList.remove('hidden');
         panelAdmin?.classList.remove('hidden');
       } else {
         btnSide?.classList.add('hidden');
+        btnSide?.classList.remove('flex');
         btnMain?.classList.add('hidden');
         btnFloat?.classList.add('hidden');
         panelAdmin?.classList.add('hidden');
-        if (modoEdicionActivo) alternarModoEdicion();
+        
+        document.body.classList.remove('modo-edicion');
+        editables.forEach(el => el.removeAttribute('contenteditable'));
+        modoEdicionActivo = false;
       }
+      cargarGaleria();
     }
 
     // CERRAR SESIÓN
@@ -432,7 +462,7 @@
       aplicarEstadoAdmin(false);
     });
 
-    // INICIAR SESIÓN
+    // INICIAR SESIÓN FORMULARIO
     document.getElementById('form-login')?.addEventListener('submit', (e) => {
       e.preventDefault();
       const u = document.getElementById('login-usuario').value;
@@ -441,37 +471,12 @@
       if (u === 'rodrigo.f' && c === 'huala146') {
         cerrarLogin();
         aplicarEstadoAdmin(true);
-        cargarGaleria();
       } else {
         document.getElementById('login-error')?.classList.remove('hidden');
       }
     });
 
-    // NAVEGACIÓN ACTIVA AL SCROLLEAR
-    window.addEventListener('scroll', () => {
-      const sections = document.querySelectorAll('main section');
-      const navLinks = document.querySelectorAll('#nav-menu a');
-      let currentSectionId = '';
-
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop - 150;
-        if (window.scrollY >= sectionTop) {
-          currentSectionId = section.getAttribute('id');
-        }
-      });
-
-      navLinks.forEach(link => {
-        link.classList.remove('bg-orange-500/10', 'text-orange-400', 'font-medium');
-        link.classList.add('text-gray-400');
-
-        if (link.getAttribute('href') === `#${currentSectionId}`) {
-          link.classList.add('bg-orange-500/10', 'text-orange-400', 'font-medium');
-          link.classList.remove('text-gray-400');
-        }
-      });
-    });
-
-    // CARGAR GALERÍA DE TRABAJOS
+    // CARGAR GALERÍA
     async function cargarGaleria() {
       const contenedorGaleria = document.getElementById('galeria-fotos');
       if (!contenedorGaleria) return;
@@ -481,7 +486,10 @@
           .from(BUCKET_NAME)
           .list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
 
-        if (error || !files) return;
+        if (error || !files) {
+          contenedorGaleria.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Aún no hay fotos públicas en la galería.</p>`;
+          return;
+        }
 
         const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('perfil_'));
 
@@ -494,25 +502,66 @@
         fotosValidas.forEach(file => {
           const { data } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(file.name);
           const card = document.createElement('div');
-          card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg';
+          card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg relative group';
+          
+          let botonEliminar = '';
+          if (esAdmin) {
+            botonEliminar = `
+              <button onclick="eliminarFotoGaleria('${file.name}')" title="Eliminar foto" class="absolute top-2 right-2 p-1.5 bg-red-600/80 hover:bg-red-600 text-white rounded-lg transition shadow-md">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            `;
+          }
+
           card.innerHTML = `
-            <img src="${data.publicUrl}" class="w-full h-48 object-cover">
+            <img src="${data.publicUrl}" class="w-full h-48 object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Proyecto&background=27272a&color=f97316'">
+            ${botonEliminar}
             <div class="p-3">
-              <p class="text-xs text-gray-300 font-medium editable">${file.name.split('_').slice(2).join(' ') || 'Proyecto'}</p>
+              <p class="text-xs text-gray-300 font-medium editable">Proyecto de Obra</p>
             </div>
           `;
           contenedorGaleria.appendChild(card);
         });
+        lucide.createIcons();
       } catch (err) {
         console.error(err);
       }
     }
 
-    // INICIALIZACIÓN
+    // SCROLLSPY (RESALTADO COMPLETO DEL MENÚ LATERAL)
+    function inicializarScrollSpy() {
+      const secciones = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-link');
+
+      const observerOptions = {
+        root: null,
+        rootMargin: '-20% 0px -70% 0px', // Ajustado para detectar secciones inferiores
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+              link.classList.remove('active');
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+              }
+            });
+          }
+        });
+      }, observerOptions);
+
+      secciones.forEach(sec => observer.observe(sec));
+    }
+
+    // INICIALIZACIÓN GENERAL
     document.addEventListener('DOMContentLoaded', () => {
       cargarFotoPerfilGuardada();
-      cargarGaleria();
-      aplicarEstadoAdmin(false); // Garantizar que la sesión inicie cerrada
+      aplicarEstadoAdmin(false); // Forzar sesión cerrada al inicio
+      inicializarScrollSpy();
+      lucide.createIcons();
     });
   </script>
 </body>
