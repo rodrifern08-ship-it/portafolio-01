@@ -213,7 +213,7 @@
         </div>
       </section>
 
-      <!-- Ubicación (Sin el botón de WhatsApp) -->
+      <!-- Ubicación -->
       <section id="ubicacion" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 scroll-mt-6">
         <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <i data-lucide="map-pin" class="w-5 h-5 text-orange-500"></i>
@@ -374,16 +374,22 @@
       }
     });
 
-    // ELIMINAR FOTO DE GALERÍA (FUNCIÓN GLOBAL CORREGIDA)
+    // FUNCIÓN DE ELIMINACIÓN CON RESPUESTA DETALLADA
     window.eliminarFotoGaleria = async function(fileName) {
-      if (!confirm('¿Deseas borrar esta imagen de la galería permanentemente?')) return;
+      if (!confirm('¿Seguro que deseas borrar esta imagen?')) return;
 
-      const { error } = await _supabase.storage.from(BUCKET_NAME).remove([fileName]);
+      try {
+        const { data, error } = await _supabase.storage.from(BUCKET_NAME).remove([fileName]);
 
-      if (error) {
-        alert('Error al borrar la foto de Supabase: ' + error.message);
-      } else {
-        alert('¡Foto eliminada con éxito!');
+        if (error) {
+          alert('Atención de Supabase: ' + error.message + '\n\nSi persiste, asegúrate de activar el permiso DELETE en las Políticas RLS de Supabase.');
+        } else {
+          alert('¡Imagen borrada exitosamente!');
+        }
+      } catch (err) {
+        console.error('Error al intentar eliminar:', err);
+      } finally {
+        // Refrescar lista de la galería inmediatamente
         cargarGaleria();
       }
     };
@@ -467,7 +473,7 @@
       }
     });
 
-    // CARGAR GALERÍA Y BOTÓN ELIMINAR SOBRE CADA FOTO
+    // CARGAR GALERÍA
     async function cargarGaleria() {
       const contenedorGaleria = document.getElementById('galeria-fotos');
       if (!contenedorGaleria) return;
@@ -498,7 +504,7 @@
           let botonEliminarHTML = '';
           if (esAdmin) {
             botonEliminarHTML = `
-              <button onclick="eliminarFotoGaleria('${file.name}')" title="Eliminar foto" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors shadow-lg z-20 flex items-center justify-center">
+              <button onclick="eliminarFotoGaleria('${file.name}')" title="Borrar foto" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors shadow-lg z-20 flex items-center justify-center">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
             `;
