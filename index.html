@@ -198,27 +198,27 @@
         </div>
       </section>
 
-    </main>
+   </main>
   </div>
 
-  <!-- Inicializar íconos -->
+  <!-- Inicializar íconos Lucide -->
   <script>
     lucide.createIcons();
   </script>
 
-  <!-- Script de Conexión Supabase + Autenticación de Admin -->
+  <!-- Script de Conexión Supabase + Autenticación + Carga de Galería -->
   <script>
     const SUPABASE_URL = 'https://vqjgepiqnpiglkloeexa.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_gOdQYGPUCFAxvOmO52_DNQ_lUrUrdKp';
     const BUCKET_NAME = 'fotos-portafolio';
     
-    // Credenciales de acceso para el Administrador
-    const USUARIO_ADMIN = 'rodrigo.f';
-    const CLAVE_ADMIN = 'huala146';
+    // Credenciales de acceso
+    const USUARIO_ADMIN = 'rodrigo';
+    const CLAVE_ADMIN = 'rodrigo2026';
 
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 🔑 Lógica de Login al hacer clic en la "R" naranja
+    // 🔑 Login de Administrador
     function solicitarLogin() {
       const usuarioIngresado = prompt('Usuario Administrador:');
       if (!usuarioIngresado) return;
@@ -231,85 +231,119 @@
         if (panel) {
           panel.classList.remove('hidden');
           panel.scrollIntoView({ behavior: 'smooth' });
+          cargarGaleria();
         }
       } else {
         alert('Usuario o contraseña incorrectos.');
       }
     }
 
-    // Escuchadores de eventos para los íconos "R"
-    document.getElementById('btn-login-desktop')?.addEventListener('click', solicitarLogin);
-    document.getElementById('btn-login-mobile')?.addEventListener('click', solicitarLogin);
-
-    // Botón para ocultar/cerrar el panel admin
-    document.getElementById('btn-cerrar-admin')?.addEventListener('click', () => {
-      document.getElementById('admin-panel')?.classList.add('hidden');
-    });
-
-   // 📷 Cargar Galería desde Supabase con opción de Borrar
+    // 📷 Cargar Galería desde Supabase
     async function cargarGaleria() {
       const contenedorGaleria = document.getElementById('galeria-fotos');
       if (!contenedorGaleria) return;
 
-      const { data: files, error } = await _supabase.storage
-        .from(BUCKET_NAME)
-        .list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
+      try {
+        const { data: files, error } = await _supabase.storage
+          .from(BUCKET_NAME)
+          .list('', { limit: 50, sortBy: { column: 'created_at', order: 'desc' } });
 
-      if (error) {
-        console.error('Error al cargar fotos:', error);
-        contenedorGaleria.innerHTML = `<p class="text-xs text-red-400 col-span-full">Error al cargar la galería.</p>`;
-        return;
+        if (error) {
+          console.error('Error Supabase:', error);
+          contenedorGaleria.innerHTML = `<p class="text-xs text-red-400 col-span-full">Error al conectar con Supabase: ${error.message}</p>`;
+          return;
+        }
+
+        const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder');
+
+        if (fotosValidas.length === 0) {
+          contenedorGaleria.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Aún no hay fotos en la galería.</p>`;
+          return;
+        }
+
+        contenedorGaleria.innerHTML = '';
+
+        const esAdmin = !document.getElementById('admin-panel')?.classList.contains('hidden');
+
+        fotosValidas.forEach(file => {
+          const { data } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(file.name);
+          const nombreMostrar = file.name.split('_').slice(1).join('_') || 'Proyecto de Construcción';
+
+          const card = document.createElement('div');
+          card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg transition hover:border-orange-500/40 relative';
+          card.innerHTML = `
+            <img src="${data.publicUrl}" alt="${nombreMostrar}" class="w-full h-48 object-cover">
+            <div class="p-3 flex justify-between items-center">
+              <p class="text-xs text-gray-300 font-medium truncate">${nombreMostrar}</p>
+              ${esAdmin ? `
+                <button onclick="eliminarFoto('${file.name}')" class="px-2 py-1 bg-red-600/80 hover:bg-red-600 text-white text-[10px] rounded transition">
+                  Eliminar
+                </button>
+              ` : ''}
+            </div>
+          `;
+          contenedorGaleria.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        contenedorGaleria.innerHTML = `<p class="text-xs text-red-400 col-span-full">Ocurrió un error inesperado al cargar la galería.</p>`;
       }
-
-      const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder');
-
-      if (fotosValidas.length === 0) {
-        contenedorGaleria.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Aún no hay fotos públicas en la galería.</p>`;
-        return;
-      }
-
-      contenedorGaleria.innerHTML = ''; 
-
-      // Verificar si el modo admin está activo
-      const esAdmin = !document.getElementById('admin-panel')?.classList.contains('hidden');
-
-      fotosValidas.forEach(file => {
-        const { data } = _supabase.storage.from(BUCKET_NAME).getPublicUrl(file.name);
-        const nombreMostrar = file.name.split('_').slice(1).join('_') || 'Proyecto de Construcción';
-
-        const card = document.createElement('div');
-        card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg transition hover:border-orange-500/40 relative group';
-        
-        card.innerHTML = `
-          <img src="${data.publicUrl}" alt="${nombreMostrar}" class="w-full h-48 object-cover">
-          <div class="p-3 flex justify-between items-center">
-            <p class="text-xs text-gray-300 font-medium truncate">${nombreMostrar}</p>
-            ${esAdmin ? `
-              <button onclick="eliminarFoto('${file.name}')" class="px-2 py-1 bg-red-600/80 hover:bg-red-600 text-white text-[10px] rounded transition">
-                Eliminar
-              </button>
-            ` : ''}
-          </div>
-        `;
-        contenedorGaleria.appendChild(card);
-      });
     }
 
-    // 🗑️ Función para borrar foto de Supabase
+    // 🗑️ Borrar Foto
     async function eliminarFoto(nombreArchivo) {
-      const confirmar = confirm('¿Estás seguro de que deseas eliminar esta imagen?');
-      if (!confirmar) return;
+      if (!confirm('¿Seguro que deseas eliminar esta imagen?')) return;
 
       const { error } = await _supabase.storage
         .from(BUCKET_NAME)
         .remove([nombreArchivo]);
 
       if (error) {
-        alert('Error al eliminar la foto: ' + error.message);
+        alert('Error al eliminar: ' + error.message);
       } else {
-        alert('Foto eliminada correctamente.');
-        cargarGaleria(); // Recargar la galería inmediatamente
+        alert('Imagen eliminada.');
+        cargarGaleria();
       }
     }
+
+    // Eventos al cargar el documento
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('btn-login-desktop')?.addEventListener('click', solicitarLogin);
+      document.getElementById('btn-login-mobile')?.addEventListener('click', solicitarLogin);
+      
+      document.getElementById('btn-cerrar-admin')?.addEventListener('click', () => {
+        document.getElementById('admin-panel')?.classList.add('hidden');
+        cargarGaleria();
+      });
+
+      cargarGaleria();
+    });
+
+    // Subir Foto
+    document.getElementById('btn-subir')?.addEventListener('click', async () => {
+      const fileInput = document.getElementById('input-foto');
+      const file = fileInput?.files[0];
+
+      if (!file) {
+        alert('Por favor selecciona una imagen primero.');
+        return;
+      }
+
+      const fileName = `${Date.now()}_${file.name}`;
+
+      const { data, error } = await _supabase.storage
+        .from(BUCKET_NAME)
+        .upload(fileName, file);
+
+      if (error) {
+        alert('Error al subir la imagen: ' + error.message);
+      } else {
+        alert('¡Imagen publicada con éxito!');
+        fileInput.value = '';
+        cargarGaleria();
+      }
+    });
+  </script>
+
 </body>
 </html>
