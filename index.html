@@ -32,6 +32,30 @@
       color: #fb923c !important;
       font-weight: 600;
     }
+    /* Estilos personalizados para el widget de Google Translate */
+    .goog-te-gadget-simple {
+      background-color: #27272a !important;
+      border: 1px solid #3f3f46 !important;
+      padding: 6px 10px !important;
+      border-radius: 8px !important;
+      font-size: 12px !important;
+      width: 100% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+    }
+    .goog-te-gadget-simple span {
+      color: #d4d4d8 !important;
+    }
+    .goog-te-gadget-icon {
+      display: none !important;
+    }
+    .goog-te-banner-frame {
+      display: none !important;
+    }
+    body {
+      top: 0px !important;
+    }
   </style>
 </head>
 <body class="bg-[#0f0f12] text-gray-200 font-sans min-h-screen flex flex-col">
@@ -50,7 +74,7 @@
           </button>
         </div>
 
-        <div class="flex items-center gap-3 mb-8">
+        <div class="flex items-center gap-3 mb-6">
           <button id="btn-login-desktop" title="Acceso Administrador" class="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-500 cursor-pointer transition-transform hover:scale-105 active:scale-95 shrink-0 bg-gray-800 flex items-center justify-center">
             <img id="img-perfil-desktop" src="foto-perfil.jpeg" alt="Rodrigo Fernandez" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Rodrigo+Fernandez&background=27272a&color=f97316';">
           </button>
@@ -58,6 +82,12 @@
             <h2 class="text-white font-bold text-sm editable">Rodrigo Fernandez</h2>
             <p class="text-xs text-gray-400 editable">Construcción en seco</p>
           </div>
+        </div>
+
+        <!-- Selector de Idioma (Google Translate) -->
+        <div class="mb-6">
+          <p class="text-[10px] uppercase font-semibold text-gray-400 mb-1.5 tracking-wider">Idioma / Language</p>
+          <div id="google_translate_element"></div>
         </div>
 
         <nav class="space-y-2" id="nav-menu">
@@ -287,6 +317,19 @@
       </form>
     </div>
   </div>
+
+  <!-- Script de Inicialización de Google Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'es',
+        includedLanguages: 'en,pt', // Idiomas permitidos: Inglés y Portugués
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <script>
     const SUPABASE_URL = 'https://vqjgepiqnpiglkloeexa.supabase.co';
