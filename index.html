@@ -36,6 +36,9 @@
 </head>
 <body class="bg-[#0f0f12] text-gray-200 font-sans min-h-screen flex flex-col">
 
+  <!-- Contenedor para Notificaciones Flotantes (Toasts) -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
   <div class="flex items-start w-full relative min-h-screen">
     
     <!-- Sidebar Navegación Lateral -->
@@ -286,7 +289,7 @@
           <input type="password" id="login-clave" required class="w-full bg-[#27272a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-orange-500">
         </div>
         <p id="login-error" class="text-xs text-red-400 hidden text-center font-medium">Datos incorrectos.</p>
-        <button type="submit" class="w-full py-2 bg-orange-500 text-white font-medium text-xs rounded-lg font-bold">Entrar</button>
+        <button type="submit" class="w-full py-2 bg-orange-500 text-white text-xs rounded-lg font-bold">Entrar</button>
       </form>
     </div>
   </div>
@@ -298,6 +301,35 @@
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let esAdmin = false;
+
+    // SISTEMA DE NOTIFICACIONES ESTILIZADAS (TOASTS)
+    function mostrarNotificacion(mensaje, tipo = 'exito') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const esExito = tipo === 'exito';
+      const colorBorde = esExito ? 'border-emerald-500/40' : 'border-red-500/40';
+      const colorIcono = esExito ? 'text-emerald-400' : 'text-red-400';
+      const icono = esExito ? 'check-circle' : 'alert-circle';
+
+      toast.className = `bg-[#18181c] border ${colorBorde} text-white text-xs font-medium px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto`;
+      toast.innerHTML = `
+        <i data-lucide="${icono}" class="w-4 h-4 ${colorIcono} shrink-0"></i>
+        <span>${mensaje}</span>
+      `;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
 
     // ACTUALIZAR IMÁGENES DE PERFIL
     function actualizarImagenesPerfil(url) {
@@ -351,14 +383,17 @@
       const fileInput = document.getElementById('input-foto-perfil');
       const file = fileInput?.files[0];
 
-      if (!file) { alert('Selecciona una imagen primero.'); return; }
+      if (!file) { 
+        mostrarNotificacion('Selecciona una imagen primero.', 'error'); 
+        return; 
+      }
 
       await guardarImagenLocal(file);
 
       const fileName = `perfil_rodrigo_${Date.now()}.jpeg`;
       await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
 
-      alert('¡Foto de perfil actualizada!');
+      mostrarNotificacion('¡Foto de perfil actualizada!');
       fileInput.value = '';
     });
 
@@ -367,15 +402,18 @@
       const fileInput = document.getElementById('input-foto');
       const file = fileInput?.files[0];
 
-      if (!file) { alert('Selecciona una imagen para la galería.'); return; }
+      if (!file) { 
+        mostrarNotificacion('Selecciona una imagen para la galería.', 'error'); 
+        return; 
+      }
 
       const fileName = `obra_${Date.now()}_${file.name}`;
       const { error } = await _supabase.storage.from(BUCKET_NAME).upload(fileName, file);
 
       if (error) {
-        alert('Error al subir imagen: ' + error.message);
+        mostrarNotificacion('Error al subir imagen: ' + error.message, 'error');
       } else {
-        alert('¡Foto agregada a la galería!');
+        mostrarNotificacion('¡Foto agregada a la galería!');
         fileInput.value = '';
         cargarGaleria();
       }
@@ -383,15 +421,13 @@
 
     // FUNCIÓN DE ELIMINACIÓN DE IMÁGENES
     window.eliminarFotoGaleria = async function(fileName) {
-      if (!confirm('¿Seguro que deseas borrar esta imagen?')) return;
-
       try {
         const { error } = await _supabase.storage.from(BUCKET_NAME).remove([fileName]);
 
         if (error) {
-          alert('No se pudo eliminar de Supabase: ' + error.message);
+          mostrarNotificacion('No se pudo eliminar de Supabase: ' + error.message, 'error');
         } else {
-          alert('¡Imagen eliminada correctamente!');
+          mostrarNotificacion('¡Imagen eliminada correctamente!');
         }
       } catch (err) {
         console.error('Error al intentar eliminar:', err);
@@ -464,6 +500,7 @@
     // CERRAR SESIÓN
     document.getElementById('btn-cerrar-admin')?.addEventListener('click', () => {
       aplicarEstadoAdmin(false);
+      mostrarNotificacion('Sesión cerrada');
     });
 
     // INICIAR SESIÓN FORMULARIO
@@ -475,6 +512,7 @@
       if (u === 'rodrigo.f' && c === 'huala146') {
         cerrarLogin();
         aplicarEstadoAdmin(true);
+        mostrarNotificacion('Bienvenido Rodrigo');
       } else {
         document.getElementById('login-error')?.classList.remove('hidden');
       }
@@ -495,7 +533,6 @@
           return;
         }
 
-        // CORRECCIÓN 1: Filtra para que NO cargue las fotos que empiezan con 'perfil_'
         const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('perfil_'));
 
         if (fotosValidas.length === 0) {
@@ -509,7 +546,6 @@
           const card = document.createElement('div');
           card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg relative group';
           
-          // CORRECCIÓN 2: Asignación limpia sin la palabra 'const' duplicate
           let botonEliminarHTML = '';
           if (esAdmin) {
             botonEliminarHTML = `
