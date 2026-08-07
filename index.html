@@ -75,6 +75,10 @@
             <i data-lucide="briefcase" class="w-4 h-4 shrink-0"></i>
             <span>Experiencia / Trabajos</span>
           </a>
+          <a href="#zona-trabajo" id="link-zona-trabajo" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
+            <i data-lucide="map-pin" class="w-4 h-4 shrink-0"></i>
+            <span>Zona de Trabajo</span>
+          </a>
           <a href="#contacto" id="link-contacto" class="nav-link flex items-center gap-3 px-3 py-2 text-gray-400 hover:text-white rounded-lg text-sm transition">
             <i data-lucide="phone" class="w-4 h-4 shrink-0"></i>
             <span>Contactos</span>
@@ -205,6 +209,25 @@
             <h3 class="text-white font-semibold text-base editable">Montador de Durlock y Estructuras</h3>
             <p class="text-xs text-gray-400 editable">Empresa de Construcción / Obras • 2018 - 2020</p>
             <p class="text-sm text-gray-300 mt-2 editable">Armado de perfiles de acero galvanizado, colocación de aislantes térmicos y emplacado.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Zona de Trabajo -->
+      <section id="zona-trabajo" class="bg-[#18181c] border border-gray-800 rounded-xl p-6 scroll-mt-6">
+        <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <i data-lucide="map-pin" class="w-5 h-5 text-orange-500"></i>
+          <span class="editable">Zona de Cobertura y Trabajo</span>
+        </h2>
+        <div class="bg-[#27272a] p-4 rounded-xl border border-gray-800 flex flex-col md:flex-row items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
+            <i data-lucide="map" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="text-white font-bold text-sm editable">Área de Cobertura Principal</h3>
+            <p class="text-xs text-gray-300 mt-1 leading-relaxed editable">
+              Atención en toda la zona local y alrededores. Realización de presupuestos sin cargo y traslados a obras particulares, locales y proyectos comerciales.
+            </p>
           </div>
         </div>
       </section>
@@ -435,7 +458,6 @@
         modoEdicionActivo = false;
       }
       
-      // FORZAR REBUILT DE GALERÍA CON O SIN BOTÓN ELIMINAR
       cargarGaleria();
     }
 
@@ -473,10 +495,11 @@
           return;
         }
 
-        const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder');
+        // CORRECCIÓN 1: Filtra para que NO cargue las fotos que empiezan con 'perfil_'
+        const fotosValidas = files.filter(f => f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('perfil_'));
 
         if (fotosValidas.length === 0) {
-          contenedorGaleria.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Aún no hay fotos cargadas.</p>`;
+          contenedorGaleria.innerHTML = `<p class="text-xs text-gray-500 col-span-full">Aún no hay fotos cargadas en la galería.</p>`;
           return;
         }
 
@@ -486,9 +509,10 @@
           const card = document.createElement('div');
           card.className = 'bg-[#27272a] border border-gray-800 rounded-xl overflow-hidden shadow-lg relative group';
           
+          // CORRECCIÓN 2: Asignación limpia sin la palabra 'const' duplicate
           let botonEliminarHTML = '';
           if (esAdmin) {
-            const botonEliminarHTML = `
+            botonEliminarHTML = `
               <button onclick="eliminarFotoGaleria('${file.name}')" title="Borrar foto" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-transform active:scale-95 shadow-2xl z-50 flex items-center justify-center cursor-pointer">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
