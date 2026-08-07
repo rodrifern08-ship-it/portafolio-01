@@ -359,26 +359,53 @@
 
     let esAdmin = false;
 
-    // LÓGICA DE TRADUCCIÓN AUTOMÁTICA Y MANUAL
-    function cambiarIdioma(codigo) {
-      // Si el sitio está en modo edición, no traducimos para proteger los textos originales
-      if (typeof modoEdicionActivo !== 'undefined' && modoEdicionActivo) return;
+    // LÓGICA DE TRADUCCIÓN AUTOMÁTICA Y MANUAL MEJORADA
+function cambiarIdioma(codigo) {
+  // Si el sitio está en modo edición, no traducimos para proteger los textos originales
+  if (typeof modoEdicionActivo !== 'undefined' && modoEdicionActivo) return;
 
-      const combo = document.querySelector('.goog-te-combo');
-      
-      // Actualizar estilo visual de los botones
-      document.querySelectorAll('.btn-bandera').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById(`flag-${codigo}`);
-      if (activeBtn) activeBtn.classList.add('active');
+  // Actualizar estilo visual de los botones de las banderas
+  document.querySelectorAll('.btn-bandera').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById(`flag-${codigo}`);
+  if (activeBtn) activeBtn.classList.add('active');
 
-      if (combo) {
-        combo.value = codigo === 'es' ? '' : codigo;
-        combo.dispatchEvent(new Event('change'));
-      } else {
-        // En caso de que el motor de Google aún no haya cargado reintentamos en 300ms
-        setTimeout(() => cambiarIdioma(codigo), 300);
-      }
+  // Caso especial: Volver al idioma nativo (Español)
+  if (codigo === 'es') {
+    // Borrar la cookie de Google Translate para restaurar el texto original
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + location.hostname;
+    
+    // Si la iframe/widget de Google modificó el DOM, recargamos limpiamente
+    if (document.cookie.includes('googtrans') || location.hash.includes('googtrans')) {
+      location.reload();
+      return;
     }
+
+    // Intentar forzar la restauración mediante el elemento iframe de Google
+    const frame = document.querySelector('iframe.goog-te-banner-frame');
+    if (frame) {
+      const btnRestaurar = frame.contentDocument.querySelector('button[id*="restore"]');
+      if (btnRestaurar) btnRestaurar.click();
+    }
+    
+    const combo = document.querySelector('.goog-te-combo');
+    if (combo) {
+      combo.value = '';
+      combo.dispatchEvent(new Event('change'));
+    }
+    return;
+  }
+
+  // Cambio a otros idiomas (Inglés / Portugués)
+  const combo = document.querySelector('.goog-te-combo');
+  if (combo) {
+    combo.value = codigo;
+    combo.dispatchEvent(new Event('change'));
+  } else {
+    // Reintento si el motor aún no ha cargado completamente
+    setTimeout(() => cambiarIdioma(codigo), 300);
+  }
+}
 
     function detectarIdiomaNavegador() {
       const userLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
