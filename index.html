@@ -51,7 +51,7 @@
 </head>
 <body class="bg-[#0f0f12] text-gray-200 font-sans min-h-screen flex flex-col">
 
-  <!-- Div invisible para inicializar el motor de Google Translate en segundo plano -->
+  <!-- Div invisible para inicializar el motor de Google Translate -->
   <div id="google_translate_element"></div>
 
   <!-- Contenedor para Notificaciones Flotantes (Toasts) -->
@@ -78,7 +78,7 @@
           </div>
         </div>
 
-        <!-- Selector de Idioma por Banderas -->
+        <!-- Selector de Idioma por Banderas (Desktop) -->
         <div class="mb-6 bg-[#18181c] p-2.5 rounded-xl border border-gray-800/80">
           <p class="text-[10px] uppercase font-semibold text-gray-400 mb-2 tracking-wider text-center">Idioma / Language</p>
           <div class="flex items-center justify-center gap-3">
@@ -147,13 +147,13 @@
 
         <!-- Banderas Móvil -->
         <div class="flex items-center gap-1.5 bg-[#18181c] p-1 rounded-lg border border-gray-800">
-          <button onclick="cambiarIdioma('es')" id="flag-es-m" class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-transparent">
+          <button onclick="cambiarIdioma('es')" id="flag-es-m" class="btn-bandera active w-6 h-6 rounded-full overflow-hidden shrink-0 border border-transparent">
             <img src="https://flagcdn.com/w40/ar.png" alt="AR" class="w-full h-full object-cover">
           </button>
-          <button onclick="cambiarIdioma('pt')" id="flag-pt-m" class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-transparent">
+          <button onclick="cambiarIdioma('pt')" id="flag-pt-m" class="btn-bandera w-6 h-6 rounded-full overflow-hidden shrink-0 border border-transparent">
             <img src="https://flagcdn.com/w40/br.png" alt="BR" class="w-full h-full object-cover">
           </button>
-          <button onclick="cambiarIdioma('en')" id="flag-en-m" class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-transparent">
+          <button onclick="cambiarIdioma('en')" id="flag-en-m" class="btn-bandera w-6 h-6 rounded-full overflow-hidden shrink-0 border border-transparent">
             <img src="https://flagcdn.com/w40/us.png" alt="US" class="w-full h-full object-cover">
           </button>
         </div>
@@ -176,7 +176,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Cambiar Foto de Perfil -->
           <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800">
             <label class="block text-xs font-medium text-orange-400 mb-2 flex items-center gap-2">
               <i data-lucide="camera" class="w-4 h-4"></i> Cambiar Foto de Perfil
@@ -187,7 +186,6 @@
             </button>
           </div>
 
-          <!-- Subir Foto a Galería -->
           <div class="bg-[#27272a] p-3 rounded-lg border border-gray-800">
             <label class="block text-xs font-medium text-orange-400 mb-2 flex items-center gap-2">
               <i data-lucide="upload-cloud" class="w-4 h-4"></i> Subir Foto a Galería
@@ -339,7 +337,7 @@
     </div>
   </div>
 
-  <!-- Script de Carga de Motor de Traducción -->
+  <!-- Script de Carga de Google Translate -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -359,53 +357,41 @@
 
     let esAdmin = false;
 
-    // LÓGICA DE TRADUCCIÓN AUTOMÁTICA Y MANUAL MEJORADA
-function cambiarIdioma(codigo) {
-  // Si el sitio está en modo edición, no traducimos para proteger los textos originales
-  if (typeof modoEdicionActivo !== 'undefined' && modoEdicionActivo) return;
+    // LÓGICA DE TRADUCCIÓN OPTIMIZADA
+    function cambiarIdioma(codigo) {
+      if (typeof modoEdicionActivo !== 'undefined' && modoEdicionActivo) return;
 
-  // Actualizar estilo visual de los botones de las banderas
-  document.querySelectorAll('.btn-bandera').forEach(btn => btn.classList.remove('active'));
-  const activeBtn = document.getElementById(`flag-${codigo}`);
-  if (activeBtn) activeBtn.classList.add('active');
+      // Actualizar el estado visual de los botones de bandera
+      document.querySelectorAll('.btn-bandera').forEach(btn => btn.classList.remove('active'));
+      
+      const btnDesktop = document.getElementById(`flag-${codigo}`);
+      const btnMobile = document.getElementById(`flag-${codigo}-m`);
+      if (btnDesktop) btnDesktop.classList.add('active');
+      if (btnMobile) btnMobile.classList.add('active');
 
-  // Caso especial: Volver al idioma nativo (Español)
-  if (codigo === 'es') {
-    // Borrar la cookie de Google Translate para restaurar el texto original
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + location.hostname;
-    
-    // Si la iframe/widget de Google modificó el DOM, recargamos limpiamente
-    if (document.cookie.includes('googtrans') || location.hash.includes('googtrans')) {
-      location.reload();
-      return;
+      // Si elige Español (idioma original)
+      if (codigo === 'es') {
+        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
+        
+        if (window.location.hash.includes('googtrans')) {
+          window.location.hash = '';
+        }
+
+        window.location.reload();
+        return;
+      }
+
+      // Si elige Inglés o Portugués
+      const combo = document.querySelector('.goog-te-combo');
+      if (combo) {
+        combo.value = codigo;
+        combo.dispatchEvent(new Event('change'));
+      } else {
+        setTimeout(() => cambiarIdioma(codigo), 300);
+      }
     }
-
-    // Intentar forzar la restauración mediante el elemento iframe de Google
-    const frame = document.querySelector('iframe.goog-te-banner-frame');
-    if (frame) {
-      const btnRestaurar = frame.contentDocument.querySelector('button[id*="restore"]');
-      if (btnRestaurar) btnRestaurar.click();
-    }
-    
-    const combo = document.querySelector('.goog-te-combo');
-    if (combo) {
-      combo.value = '';
-      combo.dispatchEvent(new Event('change'));
-    }
-    return;
-  }
-
-  // Cambio a otros idiomas (Inglés / Portugués)
-  const combo = document.querySelector('.goog-te-combo');
-  if (combo) {
-    combo.value = codigo;
-    combo.dispatchEvent(new Event('change'));
-  } else {
-    // Reintento si el motor aún no ha cargado completamente
-    setTimeout(() => cambiarIdioma(codigo), 300);
-  }
-}
 
     function detectarIdiomaNavegador() {
       const userLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
@@ -415,11 +401,14 @@ function cambiarIdioma(codigo) {
       } else if (userLang.startsWith('en')) {
         cambiarIdioma('en');
       } else {
-        cambiarIdioma('es');
+        // En caso de estar en español no traducimos
+        document.querySelectorAll('.btn-bandera').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('flag-es')?.classList.add('active');
+        document.getElementById('flag-es-m')?.classList.add('active');
       }
     }
 
-    // SISTEMA DE NOTIFICACIONES ESTILIZADAS (TOASTS)
+    // NOTIFICACIONES TOASTS
     function mostrarNotificacion(mensaje, tipo = 'exito') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -536,7 +525,7 @@ function cambiarIdioma(codigo) {
       }
     });
 
-    // FUNCIÓN DE ELIMINACIÓN DE IMÁGENES
+    // ELIMINACIÓN DE IMÁGENES
     window.eliminarFotoGaleria = async function(fileName) {
       try {
         const { error } = await _supabase.storage.from(BUCKET_NAME).remove([fileName]);
@@ -553,7 +542,7 @@ function cambiarIdioma(codigo) {
       }
     };
 
-    // SISTEMA MODO EDICIÓN
+    // MODO EDICIÓN
     let modoEdicionActivo = false;
     function alternarModoEdicion() {
       if (!esAdmin) return;
@@ -561,7 +550,7 @@ function cambiarIdioma(codigo) {
       const editables = document.querySelectorAll('.editable');
 
       if (modoEdicionActivo) {
-        cambiarIdioma('es'); // Volvemos al español para editar sobre el idioma base
+        cambiarIdioma('es');
         document.body.classList.add('modo-edicion');
         editables.forEach(el => el.setAttribute('contenteditable', 'true'));
         document.getElementById('txt-btn-edit-side').innerText = "Listo";
@@ -632,7 +621,7 @@ function cambiarIdioma(codigo) {
       }
     });
 
-    // CARGAR GALERÍA Y DIBUJAR BOTONES
+    // CARGAR GALERÍA
     async function cargarGaleria() {
       const contenedorGaleria = document.getElementById('galeria-fotos');
       if (!contenedorGaleria) return;
@@ -722,7 +711,7 @@ function cambiarIdioma(codigo) {
       inicializarScrollSpy();
       lucide.createIcons();
 
-      // Ejecutar la traducción automática según navegador tras 1 segundo
+      // Ejecutar la detección automática de idioma tras 1 segundo
       setTimeout(detectarIdiomaNavegador, 1000);
     });
   </script>
